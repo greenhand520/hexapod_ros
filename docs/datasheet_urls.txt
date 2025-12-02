@@ -2,5 +2,6 @@ more about YDLIDAR X2 or other products, ref: https://www.ydlidar.com
 lubancat zero w: https://doc.embedfire.com/linux/rk356x/quick_start/zh/latest/quick_start/lubancat/lubancat.html
 MPU6500: https://invensense.tdk.com/products/motion-tracking/6-axis/mpu-6500/#documentation
 PCF8591：https://www.nxp.com.cn/docs/en/data-sheet/PCF8591.pdf
-RT9013: https://www.richtek.com/Products/Linear%20Regulator/Single%20Output%20Linear%20Regulator/RT9013?sc_lang=zh-CN
+RT9013: https://www.richtek.com/Products/Linear%20Regulator/Single%20Output%20Linear%20Regulator/RT9013
+BM3451: https://www.bydmicro.com/params/field/preview/PDF_PRODUCT_202304141002.pdf
 
