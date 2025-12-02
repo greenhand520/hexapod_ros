@@ -1,4 +1,0 @@
-stm32f405rg: https://www.st.com/en/microcontrollers-microprocessors/stm32f405rg.html
-sc8802: https://www.southchip.com/product/SC8802
-stc8g1k08: https://www.stcmicro.com/datasheet/stc8g1k08.pdf
-stc8g: https://www.stcmicro.com/datasheet/STC8G-cn.pdf
