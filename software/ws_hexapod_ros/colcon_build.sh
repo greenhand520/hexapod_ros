@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# 默认不清理且使用debug模式
+# default configuration
 CLEAN=false
 BUILD_TYPE="debug"
+UPDATE_ENV=false
 
-# 解析参数
-while getopts ":cr" opt; do
+# Parse parameters
+while getopts ":cre" opt; do
   case $opt in
     c)
       CLEAN=true
@@ -13,25 +14,29 @@ while getopts ":cr" opt; do
     r)
       BUILD_TYPE="release"
       ;;
+    e)
+      UPDATE_ENV=true
+      ;;
     \?)
-      echo "无效选项: -$OPTARG" >&2
+      echo "Invalid option: -$OPTARG" >&2
       exit 1
       ;;
   esac
 done
 
-# 如果带-c参数或第一次构建，执行清理
+# with the -c parameter, cleanup
 if [ "$CLEAN" = true ]; then
   echo "Clearing build directories..."
-  rm -Rf ./build
-  rm -Rf ./install
-  rm -Rf ./log
+  rm -rf ./build
+  rm -rf ./install
+  rm -rf ./log
 fi
 
-# 备份CMakeLists.txt
+# Backup CMakeLists.txt automatically restores in case of abnormalities
 mv CMakeLists.txt CMakeLists.txt.bak
+trap 'mv CMakeLists.txt.bak CMakeLists.txt 2>/dev/null' EXIT
 
-# 根据构建类型设置mixin参数
+# Set the mixin parameter according to the build type
 MIXIN_ARG=""
 if [ "$BUILD_TYPE" = "release" ]; then
   echo "Using Release build"
@@ -41,11 +46,6 @@ else
   MIXIN_ARG="--mixin debug"
 fi
 
-# 构建命令
-#  -DWITH_SPDLOG=ON \
-#  -DBUILD_EXE=ON \
-#   --packages-select er10_700_description \
-#   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 colcon --log-level info \
   build \
   --event-handlers console_direct+ \
@@ -56,6 +56,55 @@ colcon --log-level info \
   -DBUILD_TESTING=OFF \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
 
-# 恢复CMakeLists.txt
-mv CMakeLists.txt.bak CMakeLists.txt
-echo "Finished"
+echo "Build finished"
+
+# -e option: Write the lib path of each package under install to the LD_LIBRARY_PATH of .env
+if [ "$UPDATE_ENV" = true ]; then
+  ENV_FILE=".env"
+
+  # .env does not exist, the default content is created and written
+  if [ ! -f "$ENV_FILE" ]; then
+    cat > "$ENV_FILE" << 'EOF'
+PYTHONUNBUFFERED=1
+ROS_DOMAIN_ID=1
+AMENT_PREFIX_PATH=/opt/ros/humble
+LD_LIBRARY_PATH=/opt/ros/humble/lib:$LD_LIBRARY_PATH
+EOF
+    echo "Created $ENV_FILE"
+  fi
+
+  # Collect all lib directories under install dir
+  LIB_PATHS=""
+  for lib_dir in ./install/*/lib; do
+    if [ -d "$lib_dir" ]; then
+      abs_path=$(cd "$lib_dir" && pwd)
+      if [ -z "$LIB_PATHS" ]; then
+        LIB_PATHS="$abs_path"
+      else
+        LIB_PATHS="$LIB_PATHS:$abs_path"
+      fi
+    fi
+  done
+
+  if [ -z "$LIB_PATHS" ]; then
+    echo "Warning: The lib directory is not found under install, please compile it first with colcon_build.sh" >&2
+  else
+    # Extract the base values of existing LD_LIBRARY_PATH
+    OLD_LINE=$(grep '^LD_LIBRARY_PATH=' "$ENV_FILE" | head -1)
+    OLD_BASE=$(echo "$OLD_LINE" | sed 's/^LD_LIBRARY_PATH=//' | sed 's/:\$LD_LIBRARY_PATH$//')
+
+    if [ -n "$OLD_BASE" ]; then
+      NEW_LINE="LD_LIBRARY_PATH=${LIB_PATHS}:${OLD_BASE}:\$LD_LIBRARY_PATH"
+    else
+      NEW_LINE="LD_LIBRARY_PATH=${LIB_PATHS}:\$LD_LIBRARY_PATH"
+    fi
+
+    # Replace LD_LIBRARY_PATH row, leaving the other environment variables unchanged
+    sed -i "s|^LD_LIBRARY_PATH=.*|${NEW_LINE}|" "$ENV_FILE"
+
+    echo "Updated LD_LIBRARY_PATH in $ENV_FILE"
+    echo "  $NEW_LINE"
+  fi
+fi
+
+echo "Done"
