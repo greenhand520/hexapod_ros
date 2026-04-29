@@ -1,19 +1,19 @@
 cmake_minimum_required(VERSION 3.14)
-project("wshexapod_ros")
+project("ws_hexapod_ros")
 
-# 检查GCC版本
+# check the GCC version
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    # 获取GCC版本
+    # get the GCC version
     execute_process(
             COMMAND ${CMAKE_CXX_COMPILER} -dumpversion
             OUTPUT_VARIABLE GCC_VERSION
             OUTPUT_STRIP_TRAILING_WHITESPACE
     )
 
-    # 转换为数字格式（例如 "13.2.1" -> 13.2.1）
+    # convert to digital format（e.g. "13.2.1" -> 13.2.1）
     string(REGEX REPLACE "^([0-9]+).*" "\\1" GCC_MAJOR_VERSION "${GCC_VERSION}")
 
-    # 检查版本是否>=13
+    # check if the version is 13
     if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND GCC_MAJOR_VERSION LESS 13)
         message("\n===========================================")
         message("  ERROR: Incompatible GCC version")
