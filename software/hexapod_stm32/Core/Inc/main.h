@@ -72,16 +72,18 @@ void Error_Handler(void);
 #define TEMP2_ADC_GPIO_Port GPIOA
 #define SVM_ADC_Pin GPIO_PIN_4
 #define SVM_ADC_GPIO_Port GPIOA
-#define BC_IOUT_Pin GPIO_PIN_5
+#define BC_IOUT_Pin GPIO_PIN_6
 #define BC_IOUT_GPIO_Port GPIOA
-#define FAN_PWM_Pin GPIO_PIN_7
-#define FAN_PWM_GPIO_Port GPIOA
+#define VM_EN_Pin GPIO_PIN_2
+#define VM_EN_GPIO_Port GPIOB
 #define CS2_MPU_Pin GPIO_PIN_12
 #define CS2_MPU_GPIO_Port GPIOB
+#define BUZZ_Pin GPIO_PIN_15
+#define BUZZ_GPIO_Port GPIOA
 #define WS2812_Pin GPIO_PIN_8
 #define WS2812_GPIO_Port GPIOB
-#define BUZZ_Pin GPIO_PIN_9
-#define BUZZ_GPIO_Port GPIOB
+#define FAN_PWM_Pin GPIO_PIN_9
+#define FAN_PWM_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
