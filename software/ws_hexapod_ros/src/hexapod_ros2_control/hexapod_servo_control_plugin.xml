@@ -1,0 +1,12 @@
+<library path="hexapod_ros2_control">
+    <class name="hexapod_ros_control/ServoSystem"
+           type="hexapod_ros2_control::ServoSystem"
+           base_class_type="hardware_interface::SystemInterface">
+        <description>
+            Six-legged robot 18 servo control hardware interface.
+            Multiple bus servo protocols (currently implemented UBTECH) are supported by abstracting the ServoBase
+            interface.
+            Single-bus serial communication, libgpiod controls the STX direction pin.
+        </description>
+    </class>
+</library>
