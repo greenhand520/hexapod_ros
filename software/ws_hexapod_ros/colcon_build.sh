@@ -52,7 +52,6 @@ colcon --log-level info \
   --parallel-workers 16 \
   --cmake-args \
   -Wno-dev \
-  -DBUILD_EXE=ON \
   -DBUILD_TESTING=OFF \
   -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
 

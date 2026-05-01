@@ -15,7 +15,6 @@
   <depend>hardware_interface</depend>
 
   <build_depend>libgpiod-dev</build_depend>
-  <exec_depend>libgpiod</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

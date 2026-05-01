@@ -1,16 +1,16 @@
-# CMake
 cmake-build-*/
 .idea
 build
-# ros2
 build_**
 latest
 latest_build
-COLCON_IGNORE
 install
-
 log
 logs
 .venv
 venv
 .env
+
+micro_ros_stm32cubemx_utils
+microros_ws
+

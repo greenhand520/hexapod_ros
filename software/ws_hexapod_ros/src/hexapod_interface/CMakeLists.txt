@@ -13,8 +13,7 @@ find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-        "msg/PowerChargerState.msg"
-        "msg/PowerServoState.msg"
+        "msg/HelloWorld.msg"
         DEPENDENCIES builtin_interfaces std_msgs
 )
 
