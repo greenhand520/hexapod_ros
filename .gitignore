@@ -10,7 +10,9 @@ logs
 .venv
 venv
 .env
+*.bkp
 
 micro_ros_stm32cubemx_utils
 microros_ws
+
 
