@@ -3,9 +3,9 @@
 <package format="3">
     <name>hexapod_sensor_interface</name>
     <version>1.0.0</version>
-    <description>TODO: Package description</description>
-    <maintainer email="ohmdmbct@gmail.com">zwh</maintainer>
-    <license>TODO: License declaration</license>
+    <description>Message interface for communication with the STM32 main control board</description>
+    <maintainer email="mdmbct@outlook.com">greenhand520</maintainer>
+    <license>GPL3.0</license>
 
     <buildtool_depend>ament_cmake</buildtool_depend>
     <member_of_group>rosidl_interface_packages</member_of_group>
