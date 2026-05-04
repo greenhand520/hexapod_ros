@@ -1,0 +1,6 @@
+# ReadFirmware.srv
+uint8 servo_id
+---
+bool success
+string version
+string message

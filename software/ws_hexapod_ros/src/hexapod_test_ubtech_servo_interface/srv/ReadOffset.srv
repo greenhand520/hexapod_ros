@@ -1,0 +1,6 @@
+# ReadOffset.srv
+uint8 servo_id
+---
+bool success
+float64 offset_deg
+string message

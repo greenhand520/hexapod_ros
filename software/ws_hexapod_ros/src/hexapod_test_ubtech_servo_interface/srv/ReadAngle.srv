@@ -1,0 +1,7 @@
+# ReadAngle.srv
+uint8 servo_id
+---
+bool success
+float64 target_deg
+float64 actual_deg
+string message

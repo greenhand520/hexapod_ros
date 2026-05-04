@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>hexapod_test_ubtech_servo</name>
+  <version>1.0.0</version>
+  <description>A node to test ubtech servo</description>
+  <maintainer email="mdmbct@outlook.com">zwh</maintainer>
+  <license>GPL3.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>hexapod_test_ubtech_servo_interface</depend>
+  <depend>hexapod_ubtech_ros2_control</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

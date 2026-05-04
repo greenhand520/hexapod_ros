@@ -1,0 +1,10 @@
+hexapod_test_ubtech_servo_node:
+  ros__parameters:
+    log:
+      log_level: debug
+      log_path: ./log
+      async: false
+    serial_device:
+    baud_rate: 115200
+    gpio_chip:
+    tx_en_line:

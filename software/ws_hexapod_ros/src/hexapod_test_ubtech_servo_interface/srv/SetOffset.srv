@@ -1,0 +1,6 @@
+# SetOffset.srv
+uint8 servo_id
+float64 offset_deg    # -30.0 ~ +30.0
+---
+bool success
+string message
