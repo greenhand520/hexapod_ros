@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd"
+        schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+    <name>hexapod_bringup</name>
+    <version>1.0.0</version>
+    <description>Integration launch files and configs for the hexapod</description>
+    <maintainer email="mdmbct@outlook.com">greenhand520</maintainer>
+    <license>GPL3.0</license>
+
+    <exec_depend>hexapod_sensor_interface</exec_depend>
+    <exec_depend>hexapod_interface</exec_depend>
+    <exec_depend>hexapod_ubtech_ros2_control</exec_depend>
+    <exec_depend>ydlidar_ros2_driver</exec_depend>
+    <exec_depend>robot_state_publisher</exec_depend>
+    <exec_depend>controller_manager</exec_depend>
+
+    <export>
+        <build_type>ament_cmake</build_type>
+    </export>
+</package>
