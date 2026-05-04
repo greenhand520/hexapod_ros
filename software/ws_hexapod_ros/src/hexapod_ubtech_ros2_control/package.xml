@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>hexapod_ros2_control</name>
+  <name>hexapod_ubtech_ros2_control</name>
   <version>1.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="ohmdmbct@gmail.com">zwh</maintainer>
-  <license>TODO: License declaration</license>
+  <description>Use the ros2 control to control the ubtech serial servo</description>
+  <maintainer email="mdmbct@outlook.com">greenhand520</maintainer>
+  <license>GPL3.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
@@ -21,6 +21,6 @@
 
   <export>
     <build_type>ament_cmake</build_type>
-    <hardware_interface plugin="${prefix}/hexapod_servo_control_plugin.xml"/>
+    <hardware_interface plugin="${prefix}/hexapod_ubtech_ros2_control.xml"/>
   </export>
 </package>

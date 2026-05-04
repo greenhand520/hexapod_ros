@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 set(PROJECT_VERSION 1.0.0)
-project(hexapod_ros2_control VERSION ${PROJECT_VERSION})
+project(hexapod_ubtech_ros2_control VERSION ${PROJECT_VERSION})
 
 if (DEFINED ENV{CLION_IDE})
   message(STATUS "CLion env detected")
@@ -43,12 +43,14 @@ endif()
 #find_package(hexapod_interface REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
-        include/hexapod_ros2_control/ros_msg.hpp
-        include/hexapod_ros2_control/servo_base.hpp
-        include/hexapod_ros2_control/ubtech_servo.hpp
-        include/hexapod_ros2_control/servo_system.hpp
-        src/servo_system.cpp
+        include/hexapod_ubtech_ros2_control/gpio_pin.hpp
+        include/hexapod_ubtech_ros2_control/ubtech_servo.hpp
+        include/hexapod_ubtech_ros2_control/servo_system.hpp
+        src/gpio_pin.cpp
+        src/serial_port.cpp
         src/ubtech_servo.cpp
+        src/servo_system.cpp
+
 )
 target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -73,7 +75,6 @@ ament_target_dependencies(${PROJECT_NAME} PUBLIC
 #endif ()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-        libgpiod
         ${GPIOD_LIBRARIES}
 )
 
@@ -110,36 +111,36 @@ if (DEFINED ENV{CLION_IDE})
           COMMENT "Copying ${PROJECT_NAME} library to install directory (CLion specific)"
   )
 
-  execute_process(
-          COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/config"
-          COMMAND ${CMAKE_COMMAND} -E copy_directory
-          "${CMAKE_CURRENT_SOURCE_DIR}/config"
-          "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/config"
-          RESULT_VARIABLE result
-  )
-  if (NOT result EQUAL 1)
-    message(STATUS "Copying config to install directory (CLion specific)")
-  else ()
-    message(WARNING "Failed to copy config to install directory")
-  endif ()
+#  execute_process(
+#          COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/config"
+#          COMMAND ${CMAKE_COMMAND} -E copy_directory
+#          "${CMAKE_CURRENT_SOURCE_DIR}/config"
+#          "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/config"
+#          RESULT_VARIABLE result
+#  )
+#  if (NOT result EQUAL 1)
+#    message(STATUS "Copying config to install directory (CLion specific)")
+#  else ()
+#    message(WARNING "Failed to copy config to install directory")
+#  endif ()
 
-  execute_process(
-          COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/launch"
-          COMMAND ${CMAKE_COMMAND} -E copy_directory
-          "${CMAKE_CURRENT_SOURCE_DIR}/launch"
-          "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/launch"
-          RESULT_VARIABLE result
-  )
-  if (NOT result EQUAL 1)
-    message(STATUS "Copying config to launch directory (CLion specific)")
-  else ()
-    message(WARNING "Failed to copy launch to install directory")
-  endif ()
+#  execute_process(
+#          COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/launch"
+#          COMMAND ${CMAKE_COMMAND} -E copy_directory
+#          "${CMAKE_CURRENT_SOURCE_DIR}/launch"
+#          "${CMAKE_SOURCE_DIR}/install/${PROJECT_NAME}/share/${PROJECT_NAME}/launch"
+#          RESULT_VARIABLE result
+#  )
+#  if (NOT result EQUAL 1)
+#    message(STATUS "Copying config to launch directory (CLion specific)")
+#  else ()
+#    message(WARNING "Failed to copy launch to install directory")
+#  endif ()
 
 endif ()
 
 pluginlib_export_plugin_description_file(
-        hardware_interface hexapod_servo_control_plugin.xml)
+        hardware_interface hexapod_ubtech_ros2_control_plugin.xml)
 
 ## 安装生成的库文件
 install(TARGETS ${PROJECT_NAME}

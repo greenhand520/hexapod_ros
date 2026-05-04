@@ -1,6 +1,6 @@
-<library path="hexapod_ros2_control">
-    <class name="hexapod_ros_control/ServoSystem"
-           type="hexapod_ros2_control::ServoSystem"
+<library path="hexapod_ubtech_ros2_control">
+    <class name="hexapod_ubtech_ros2_control/ServoSystem"
+           type="hexapod_ubtech_ros2_control::ServoSystem"
            base_class_type="hardware_interface::SystemInterface">
         <description>
             Six-legged robot 18 servo control hardware interface.
