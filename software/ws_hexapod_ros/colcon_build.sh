@@ -48,6 +48,7 @@ fi
 
 colcon --log-level info \
   build \
+  --symlink-install \
   --event-handlers console_direct+ \
   --parallel-workers 16 \
   --cmake-args \
