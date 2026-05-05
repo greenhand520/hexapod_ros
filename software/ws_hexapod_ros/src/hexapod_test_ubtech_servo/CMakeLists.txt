@@ -20,9 +20,6 @@ if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif ()
 
 option(BUILD_EXE "Build node executable file" ON)
-if (BUILD_EXE)
-    option(WITH_SPDLOG "Build with spdlog" ON)
-endif ()
 set(PROJECT_EXE_NAME ${PROJECT_NAME}_exe)
 
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
@@ -30,7 +27,6 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-#find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 
@@ -40,11 +36,6 @@ if (DEFINED ENV{CLION_IDE})
 endif ()
 find_package(hexapod_ubtech_ros2_control REQUIRED)
 find_package(hexapod_test_ubtech_servo_interface REQUIRED)
-
-
-if (BUILD_EXE)
-    message(STATUS "Build node executable")
-endif ()
 
 add_library(${PROJECT_NAME} SHARED
         include/hexapod_test_ubtech_servo/ros2_msg.hpp
@@ -58,10 +49,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-        hexapod_ubtech_ros2_control
-)
-
 ament_target_dependencies(${PROJECT_NAME} PUBLIC
         rclcpp
         std_msgs
@@ -73,10 +60,12 @@ if (DEFINED ENV{CLION_IDE})
             hexapod_test_ubtech_servo_interface "rosidl_typesupport_cpp")
     target_link_libraries(${PROJECT_NAME} PUBLIC
             ${hexapod_test_ubtech_servo_interface_TARGET}
+            hexapod_ubtech_ros2_control
     )
 else ()
     ament_target_dependencies(${PROJECT_NAME} PUBLIC
             hexapod_test_ubtech_servo_interface
+            hexapod_ubtech_ros2_control
     )
 endif ()
 
@@ -85,7 +74,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif ()
 
 if (BUILD_EXE)
-
+    message(STATUS "Build node executable")
     add_executable(${PROJECT_EXE_NAME}
             src/main.cpp
     )
