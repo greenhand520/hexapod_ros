@@ -1,0 +1,105 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="软件架构 Software" id="sw">
+    <mxGraphModel dx="1380" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- TITLE -->
+        <mxCell id="title" value="六足 Hexapod-ROS2 · 软件架构图" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=22;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+          <mxGeometry x="250" y="10" width="900" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- ====== LubanCat ROS2 Container ====== -->
+        <mxCell id="c_luban" value="鲁班猫 Zero (RK3566) — ROS2 Humble" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;strokeColor=#82B366;strokeWidth=2;verticalAlign=top;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#1a5c1a;align=center;" vertex="1" parent="1">
+          <mxGeometry x="30" y="60" width="660" height="430" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="n_ros2ctrl" value="ros2_control 舵机控制节点" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82B366;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="105" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_ik" value="逆运动学解算 (IK Solver)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82B366;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="165" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_gait" value="步态生成器 (Gait Generator)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82B366;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="225" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_nav" value="路径规划与导航 (Navigation2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82B366;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="285" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_lidar" value="YDLIDAR X2 点云采集节点" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82B366;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="345" width="260" height="42" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="topics" value="&lt;b style=&quot;color:#1a5c1a&quot;&gt;关键 ROS2 话题&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;div style=&quot;text-align:left;font-size:11px;line-height:1.7;color:#2d2d2d&quot;&gt;/scan — 激光雷达点云&lt;br&gt;/cmd_vel — 速度指令&lt;br&gt;/joint_states — 关节状态&lt;br&gt;/tf — 坐标变换&lt;br&gt;/map — 占据栅格地图&lt;br&gt;/plan — 全局路径&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FFF0;strokeColor=#82B366;fontSize=11;verticalAlign=top;spacingTop=5;align=left;" vertex="1" parent="1">
+          <mxGeometry x="360" y="105" width="305" height="175" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="env" value="&lt;b style=&quot;color:#1a5c1a&quot;&gt;运行环境&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;div style=&quot;text-align:left;font-size:11px;line-height:1.7;color:#2d2d2d&quot;&gt;Ubuntu 22.04 LTS&lt;br&gt;ROS2 Humble Hawksbill&lt;br&gt;ros2_control + ros2_controllers&lt;br&gt;Navigation2 Stack&lt;br&gt;YDLIDAR SDK&lt;br&gt;4GB RAM / 32GB eMMC&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FFF0;strokeColor=#82B366;fontSize=11;verticalAlign=top;spacingTop=5;align=left;" vertex="1" parent="1">
+          <mxGeometry x="360" y="300" width="305" height="155" as="geometry"/>
+        </mxCell>
+
+        <!-- LubanCat internal flow arrows -->
+        <mxCell id="a1" value="关节角度" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#82B366;fontSize=10;fontColor=#1a5c1a;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="n_gait" target="n_ik" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a2" value="IK 结果" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#82B366;fontSize=10;fontColor=#1a5c1a;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="n_ik" target="n_ros2ctrl" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a3" value="/scan" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#82B366;fontSize=10;fontColor=#1a5c1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="n_lidar" target="n_nav" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="a4" value="运动指令" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#82B366;fontSize=10;fontColor=#1a5c1a;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="n_nav" target="n_gait" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ====== STM32 MicroROS Container ====== -->
+        <mxCell id="c_stm" value="STM32F405RGT6 — MicroROS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;strokeColor=#6C8EBF;strokeWidth=2;verticalAlign=top;spacingTop=8;fontSize=14;fontStyle=1;fontColor=#1a3d6c;align=center;" vertex="1" parent="1">
+          <mxGeometry x="730" y="60" width="640" height="430" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="n_agent" value="MicroROS Agent (串口代理)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="755" y="105" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_imu" value="MPU6500 姿态数据发布" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="755" y="165" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_bat" value="BQ40Z50 电池数据发布" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="755" y="225" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_chg" value="BQ24725 充电数据发布" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="755" y="285" width="260" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="n_env2" value="温度 / 电压数据采集发布" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6C8EBF;fontSize=12;fontColor=#2d2d2d;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="755" y="345" width="260" height="42" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="topics2" value="&lt;b style=&quot;color:#1a3d6c&quot;&gt;MicroROS 发布话题&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;div style=&quot;text-align:left;font-size:11px;line-height:1.7;color:#2d2d2d&quot;&gt;/imu/data — IMU 姿态 (四元数)&lt;br&gt;/battery/status — 电池电压/电流/电量&lt;br&gt;/charger/status — 充电状态/功率&lt;br&gt;/env/status — 板载温度/电压&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F4FF;strokeColor=#6C8EBF;fontSize=11;verticalAlign=top;spacingTop=5;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="105" width="300" height="145" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="fw" value="&lt;b style=&quot;color:#1a3d6c&quot;&gt;固件环境&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;div style=&quot;text-align:left;font-size:11px;line-height:1.7;color:#2d2d2d&quot;&gt;STM32 HAL + FreeRTOS&lt;br&gt;MicroROS for STM32&lt;br&gt;MPU6500 Driver (SPI)&lt;br&gt;BQ40Z50 Driver (SMBus)&lt;br&gt;BQ24725 Driver (I2C)&lt;br&gt;ADC 多通道采集&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F4FF;strokeColor=#6C8EBF;fontSize=11;verticalAlign=top;spacingTop=5;align=left;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="270" width="300" height="155" as="geometry"/>
+        </mxCell>
+
+        <!-- Cross-container communication -->
+        <mxCell id="cross1" value="  /imu/data  " style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#E65100;fontColor=#BF360C;fontSize=10;dashed=1;dashPattern=8 4;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="c_stm" target="c_luban" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="cross2" value="  舵机指令 (UART)  " style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=2;strokeColor=#E65100;fontColor=#BF360C;fontSize=10;dashed=1;dashPattern=8 4;exitX=1;exitY=0.12;exitDx=0;exitDy=0;entryX=0;entryY=0.12;entryDx=0;entryDy=0;" edge="1" source="c_luban" target="c_stm" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="cross3" value="  /battery/status  " style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeWidth=1;strokeColor=#E65100;fontColor=#BF360C;fontSize=9;dashed=1;dashPattern=8 4;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="c_stm" target="c_luban" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Communication note -->
+        <mxCell id="note" value="&lt;b style=&quot;color:#2d2d2d&quot;&gt;跨系统通信&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;&lt;div style=&quot;font-size:11px;line-height:1.7;color:#2d2d2d&quot;&gt;鲁班猫 Zero ←USB/UART→ STM32&lt;br&gt;通过 MicroROS Agent 建立 DDS 通道&lt;br&gt;STM32 发布传感器话题，鲁班猫订阅并融合&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#D6B656;fontSize=11;verticalAlign=top;spacingTop=5;align=left;" vertex="1" parent="1">
+          <mxGeometry x="420" y="520" width="560" height="95" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

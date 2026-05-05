@@ -1,4 +1,4 @@
-# message from bq24725 charger ic, message: /sensor/charge
+# message from bq24725 charger ic
 
 std_msgs/Header header
 # whether the AC adapter is connected
