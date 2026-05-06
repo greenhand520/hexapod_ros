@@ -20,7 +20,7 @@
 
 ### 项目概述
 
-Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用工作时间外开发中）。机器人采用双处理器架构——**鲁班猫 Zero (RK3566)** 运行 ROS2 Humble，负责高层感知、路径规划与运动控制；**STM32F405RGT6** 运行 FreeRTOS 与 MicroROS，负责实时传感器融合与底层硬件驱动。
+Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用业余时间开发中）。机器人采用双处理器架构——**鲁班猫 Zero (RK3566)** 运行 ROS2 Humble，负责高层感知、路径规划与运动控制；**STM32F405RGT6** 运行 FreeRTOS 与 MicroROS，负责实时传感器融合与底层硬件驱动。18个舵机使用的是 UBTECH 的拆机舵机，具体可参考“[某宝白菜价舵机](https://gitee.com/alicedodo/xaobao_cheap_bus_servo_hack_record/)”。
 
 **主要功能包括：**
 
@@ -28,7 +28,11 @@ Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用工作�
 - 基于 360° 二维激光雷达的 SLAM 建图与自主导航（Navigation2）
 - 实时 IMU 姿态估计与电池管理
 
-### 系统架构
+<p align="center">
+  <img src="docs/images/hexapod_all.png" alt="整体结构" width="800"/>
+</p>
+
+### hexapod_all.png系统架构
 
 系统分为三个层次：**软件层**、**硬件层**和**电源层**。以下架构图提供了完整的系统总览。
 
@@ -73,8 +77,8 @@ TODO: 等待全部开发完毕
 **1. 克隆仓库**
 
 ```bash
-git clone https://github.com/your-username/hexapod-ros2.git
-cd hexapod-ros2
+git https://github.com/greenhand520/hexapod_ros.git
+cd hexapod_ros
 ```
 
 **2. 编译 ROS2 工作空间**
