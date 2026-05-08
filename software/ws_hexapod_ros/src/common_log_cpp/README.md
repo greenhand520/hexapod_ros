@@ -22,7 +22,7 @@ endif ()
 
 ### 初始化
 
-当模块可以获取到 ros2 节点 node 实例时，可以在在 main 函数中按照下面顺序初始化全局日志
+方式1：当模块可以获取到 ros2 节点 node 实例时，可以在在 main 函数中按照下面顺序初始化全局日志
 
 ```cpp
 #include "common_log_cpp/rclcpp_log_handler.hpp"
@@ -30,7 +30,7 @@ endif ()
 #include "common_log_cpp/log_interface/log_manager.hpp"
 
 const auto node = std::make_shared<rclcpp::Node>("log_test_node");
-// 1、先使用node初始化日志logger
+// 1、先使用node初始化日志logger，调用这行代码后RCLCPP记录日志的后端才会用这个common_log_cpp来实现，而具体的实现依靠下面的log_interface::LogManager::set(logger_interface);
 common_log::RclcppLogHandler::init_from_node(node);
 // 2、获取刚才创建的logger实例中得到spdlogger对象
 const auto logger = common_log::Logger::get_instance().get_logger();
@@ -40,11 +40,14 @@ const auto logger_interface = common_log::SpdlogLoggerAdapter::create_spdlog_log
 log_interface::LogManager::set(logger_interface);
 ```
 
-获取不到 node 实例时，可以按照下面顺序初始化日志
+方式2：获取不到 node 实例时，可以按照下面顺序初始化日志
 
 ```cpp
 // 先创建LogConfig，它的配置内容获取可以自己实现
 common_log::LogConfig log_config;
+// 这里提供了一个默认实现，假设params是你存储配置的map
+std::unordered_map<std::string, std::string> params;
+log_config.init_from_map(params);
 common_log::Logger::init_from_config(&log_config);
 // 后续操作和前面一样
 const auto logger = common_log::Logger::get_instance().get_logger();
@@ -69,6 +72,7 @@ log_interface::LogManager::set(logger_interface);
 ```cpp
 LOG_DEBUG("test_log_debug {}", 123);
 LOG_INFO("test_log_info {}", 123);
+LOG_INFO("Joint '{}' (ID {}): initial {:.1f}° → {:.4f} rad", jd.name, jd.servo_id, sa.actual_deg, pos);
 LOG_WARN("test_log_warn {}", 123);
 LOG_ERROR("test_log_error {}", 123);
 LOG_FATAL("test_log_fatal {}", 123);

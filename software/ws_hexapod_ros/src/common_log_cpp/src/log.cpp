@@ -8,26 +8,14 @@
 
 #include "common_log_cpp/log.hpp"
 
-spdlog::level::level_enum str_to_log_level(const std::string& level_str) {
-    static const std::unordered_map<std::string, spdlog::level::level_enum> levelMap = {
-        {"trace", spdlog::level::level_enum::trace},
-        {"debug", spdlog::level::level_enum::debug},
-        {"info", spdlog::level::level_enum::info},
-        {"warn", spdlog::level::level_enum::warn},
-        {"warning", spdlog::level::level_enum::warn},
-        {"error", spdlog::level::level_enum::err},
-        // 关键/致命，高级别的日志等级，用于记录 严重错误或不可恢复的系统故障，通常表示程序即将崩溃或必须立即终止运行
-        {"critical", spdlog::level::level_enum::critical},
-        {"off", spdlog::level::level_enum::off},
-        {"none", spdlog::level::level_enum::off}};
+using namespace common_log;
 
-    if (const auto it = levelMap.find(level_str); it != levelMap.end()) {
+spdlog::level::level_enum common_log::str_to_log_level(const std::string& level_str) {
+    if (const auto it = LOG_LEVEL_MAP.find(level_str); it != LOG_LEVEL_MAP.end()) {
         return it->second;
     }
     return spdlog::level::level_enum::info;
 }
-
-using namespace common_log;
 
 std::string LogConfig::get_logger_name() const {
     return logger_name;

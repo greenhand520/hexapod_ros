@@ -4,17 +4,72 @@
 
 #pragma once
 
-#include <spdlog/spdlog.h>
-#include <spdlog/async.h>
 #include <memory>
 #include <mutex>
 #include <rclcpp/node.hpp>
+#include <spdlog/async.h>
+#include <spdlog/spdlog.h>
 
 #define SPDLOG_ENABLE_SOURCE_LOC
 
-inline spdlog::level::level_enum str_to_log_level(const std::string& level_str);
-
 namespace common_log {
+
+    static const std::unordered_map<std::string, spdlog::level::level_enum> LOG_LEVEL_MAP = {
+        {"trace", spdlog::level::trace},
+        {"debug", spdlog::level::debug},
+        {"info", spdlog::level::info},
+        {"warn", spdlog::level::warn},
+        {"warning", spdlog::level::warn},
+        {"error", spdlog::level::err},
+        {"critical", spdlog::level::critical},
+        {"off", spdlog::level::off},
+        {"none", spdlog::level::off},
+    };
+
+    inline spdlog::level::level_enum str_to_log_level(const std::string& level_str);
+
+    // 通用：用 istringstream 处理 int / double / float 等
+    template <typename T>
+    T str_to(const std::string& str, const T& fallback) {
+        std::istringstream iss(str);
+        T val{};
+        if (iss >> val)
+            return val;
+        return fallback;
+    }
+
+    // string 不需要转换
+    template <>
+    inline std::string str_to<std::string>(const std::string& str, const std::string&) {
+        return str;
+    }
+
+    // bool 特化
+    template <>
+    inline bool str_to<bool>(const std::string& str, const bool& fallback) {
+        if (str == "true" || str == "1" || str == "True" || str == "TRUE")
+            return true;
+        if (str == "false" || str == "0" || str == "False" || str == "FALSE")
+            return false;
+        return fallback;
+    }
+
+    template <>
+    inline spdlog::level::level_enum str_to<spdlog::level::level_enum>(
+        const std::string& str, const spdlog::level::level_enum& fallback) {
+        const auto it = LOG_LEVEL_MAP.find(str);
+        return (it != LOG_LEVEL_MAP.end()) ? it->second : fallback;
+    }
+
+    template <typename T>
+    T get_or(const std::unordered_map<std::string, std::string>& m,
+             const std::string& key, const T& default_val) {
+        const auto it = m.find(key);
+        if (it == m.end()) {
+            return default_val;
+        }
+        return str_to<T>(it->second, default_val);
+    }
 
     struct LogConfig {
         spdlog::level::level_enum log_level = spdlog::level::info;
@@ -27,6 +82,13 @@ namespace common_log {
         [[nodiscard]] std::string get_logger_name() const;
 
         void init_from_node(const rclcpp::Node::SharedPtr& node);
+
+        void init_from_map(const std::unordered_map<std::string, std::string>& m) {
+            log_level = get_or(m, "log.log_level", log_level);
+            log_path = get_or(m, "log.log_path", log_path);
+            async = get_or(m, "log.async", async);
+            logger_name = get_or(m, "log.logger_name", logger_name);
+          }
     };
 
     class Logger {
@@ -51,7 +113,9 @@ namespace common_log {
     public:
         [[nodiscard]] std::shared_ptr<spdlog::logger> get_logger() const;
 
-        [[nodiscard]] bool is_initialized() const { return initialized_; }
+        [[nodiscard]] bool is_initialized() const {
+            return initialized_;
+        }
 
         ~Logger();
 
@@ -73,4 +137,4 @@ namespace common_log {
         static std::once_flag init_flag_;
     };
 
-}
+} // namespace common_log
