@@ -1,18 +1,18 @@
 cmake-build-*/
-.idea
-build
+.idea/
+build/
 build_**
 latest
 latest_build
-install
-log
-logs
-.venv
-venv
+install/
+log/
+logs/
+.venv/
+venv/
 .env
 *.bkp
 
-micro_ros_stm32cubemx_utils
-microros_ws
+micro_ros_stm32cubemx_utils/
+microros_ws/
 
-
+.clinerules/

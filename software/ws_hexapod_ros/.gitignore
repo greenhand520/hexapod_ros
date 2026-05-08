@@ -1,16 +1,18 @@
 # CMake
 cmake-build-*/
-.idea
-build
+.idea/
+build/
 # ros2
 build_**
 latest
 latest_build
 COLCON_IGNORE
-install
+install/
 
-log
-logs
-.venv
-venv
-micro_ros_setup
+log/
+logs/
+.venv/
+venv/
+micro_ros_setup/
+
+.clinerules/
