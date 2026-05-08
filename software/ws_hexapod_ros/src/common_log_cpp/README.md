@@ -1,6 +1,6 @@
-cpp_common_log
+common_log_cpp
 
-公共的日志记录
+公共的日志记录，使用 spdlog 代替 rclcpp 的后端日志实现，并且支持自定义日志实现
 
 ## 使用方法
 
