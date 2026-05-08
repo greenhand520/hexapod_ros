@@ -32,7 +32,7 @@ Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用业余�
   <img src="docs/images/hexapod_all.png" alt="整体结构" width="800"/>
 </p>
 
-### hexapod_all.png系统架构
+### 系统架构
 
 系统分为三个层次：**软件层**、**硬件层**和**电源层**。以下架构图提供了完整的系统总览。
 
