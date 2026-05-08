@@ -18,21 +18,20 @@ namespace common_log {
 
     struct LogConfig {
         spdlog::level::level_enum log_level = spdlog::level::info;
-        spdlog::level::level_enum topic_log_level = spdlog::level::off;
         std::string log_path = "./log";
         /// 异步日志
-        bool async = false;
+        bool async = true;
 
-        rclcpp::Node::SharedPtr log_node;
+        std::string logger_name = "logger";
 
-        [[nodiscard]] std::string get_log_name() const;
+        [[nodiscard]] std::string get_logger_name() const;
 
         void init_from_node(const rclcpp::Node::SharedPtr& node);
     };
 
     class Logger {
 
-        std::string log_name_;
+        std::string logger_name_;
         std::vector<spdlog::sink_ptr> sinks_;
         std::shared_ptr<spdlog::logger> logger_;
         /// 初始化线程池（队列大小=1000，线程数=1）

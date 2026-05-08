@@ -22,7 +22,7 @@ endif ()
 
 ### 初始化
 
-在main函数中按照下面顺序初始化全局日志
+当模块可以获取到 ros2 节点 node 实例时，可以在在 main 函数中按照下面顺序初始化全局日志
 
 ```cpp
 #include "common_log_cpp/rclcpp_log_handler.hpp"
@@ -37,6 +37,18 @@ const auto logger = common_log::Logger::get_instance().get_logger();
 // 3、创建一个适配spdlog的log_interface对象
 const auto logger_interface = common_log::SpdlogLoggerAdapter::create_spdlog_logger(logger);
 // 4、设置全局日志 这样就统一log_macro.hpp和RCLCPP_xxx()的日志记录结果了
+log_interface::LogManager::set(logger_interface);
+```
+
+获取不到 node 实例时，可以按照下面顺序初始化日志
+
+```cpp
+// 先创建LogConfig，它的配置内容获取可以自己实现
+common_log::LogConfig log_config;
+common_log::Logger::init_from_config(&log_config);
+// 后续操作和前面一样
+const auto logger = common_log::Logger::get_instance().get_logger();
+const auto logger_interface = common_log::SpdlogLoggerAdapter::create_spdlog_logger(logger);
 log_interface::LogManager::set(logger_interface);
 ```
 
@@ -70,10 +82,12 @@ LOG_FATAL("test_log_fatal {}", 123);
 log:
     # 日志登记
     log_level: debug
-    # 使用none表示关闭发布日志，其他等级时，每产生一条日志会发布一个app_log的话题
-    topic_log_level: info
     # 日志路径
     log_path: ./log
     # 是否是异步日志
     async: false
+    # 日志器名字，会影响最终日志文件的名字，不设置的话默认使用节点名
+    logger_nama: test
 ```
+
+上面配置最终会产生日志的路径是`./log/log_test.log`

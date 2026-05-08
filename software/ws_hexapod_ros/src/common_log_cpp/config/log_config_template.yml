@@ -2,8 +2,8 @@ log_test_node:
   ros__parameters:
     log:
       log_level: debug
-      # 使用none表示关闭发布日志
-      topic_log_level: info
       log_path: ./log
       # 是否是异步日志
       async: false
+      # 日志器名，默认使用节点名
+      logger_name: log_test_node

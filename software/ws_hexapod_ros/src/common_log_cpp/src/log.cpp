@@ -29,29 +29,25 @@ spdlog::level::level_enum str_to_log_level(const std::string& level_str) {
 
 using namespace common_log;
 
-std::string LogConfig::get_log_name() const {
-    if (log_node) {
-        return log_node->get_name();
-    }
-    return "logger";
+std::string LogConfig::get_logger_name() const {
+    return logger_name;
 }
 
 void LogConfig::init_from_node(const rclcpp::Node::SharedPtr& node) {
     node->declare_parameter("log.log_level", "info");
-    node->declare_parameter("log.topic_log_level", "off");
     node->declare_parameter("log.log_path", "./log");
     node->declare_parameter("log.async", false);
+    node->declare_parameter("log.logger_name", node->get_name());
 
     log_level = str_to_log_level(node->get_parameter("log.log_level").as_string());
-    topic_log_level = str_to_log_level(node->get_parameter("log.topic_log_level").as_string());
     log_path = node->get_parameter("log.log_path").as_string();
     async = node->get_parameter("log.async").as_bool();
-    log_node = node;
+    logger_name = node->get_parameter("log.logger_name").as_string();
 }
 
 void Logger::init_file_log_sink(const LogConfig* log_config) {
     spdlog::sink_ptr file_sink;
-    const std::string log_file = std::format("{}/log_{}.log", log_config->log_path, log_name_);
+    const std::string log_file = std::format("{}/log_{}.log", log_config->log_path, logger_name_);
     if (log_config->async) {
         file_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(
             log_file, 0, 0);
@@ -85,11 +81,11 @@ std::once_flag Logger::init_flag_;
 
 Logger::Logger() {
     // 默认构造，创建一个最小化的logger，避免未初始化时crash
-    log_name_ = "default";
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_st>();
+    logger_name_ = "default";
+    const auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_st>();
     console_sink->set_level(spdlog::level::info);
     sinks_.push_back(console_sink);
-    logger_ = std::make_shared<spdlog::logger>(log_name_, sinks_.begin(), sinks_.end());
+    logger_ = std::make_shared<spdlog::logger>(logger_name_, sinks_.begin(), sinks_.end());
     logger_->set_level(spdlog::level::info);
     initialized_ = false; // 默认构造不算真正初始化
 }
@@ -99,7 +95,7 @@ Logger::Logger(const LogConfig* log_config) {
         std::cout << "Log config is null" << std::endl;
         throw std::runtime_error("Log config is null");
     }
-    log_name_ = log_config->get_log_name();
+    logger_name_ = log_config->get_logger_name();
 
     // [%^%l%$] 显示带颜色日志登记
     // <thread %t> 显示线程id
@@ -114,10 +110,10 @@ Logger::Logger(const LogConfig* log_config) {
 
     if (log_config->async) {
         thread_pool_ = std::make_shared<spdlog::details::thread_pool>(1000, 1);
-        logger_ = std::make_shared<spdlog::async_logger>(log_name_, sinks_.begin(), sinks_.end(), thread_pool_);
+        logger_ = std::make_shared<spdlog::async_logger>(logger_name_, sinks_.begin(), sinks_.end(), thread_pool_);
     }
     else {
-        logger_ = std::make_shared<spdlog::logger>(log_name_, sinks_.begin(), sinks_.end());
+        logger_ = std::make_shared<spdlog::logger>(logger_name_, sinks_.begin(), sinks_.end());
     }
 
     logger_->set_level(log_config->log_level);
@@ -138,7 +134,7 @@ Logger::~Logger() {
     }
     // 只清理自己创建的 logger，不使用spdlog::shutdown()
     // spdlog::shutdown()会关闭所有已注册的 spdlog logger，导致其他logger意外被销毁
-    spdlog::drop(log_name_);
+    spdlog::drop(logger_name_);
 }
 
 Logger& Logger::get_instance() {
