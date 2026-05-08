@@ -20,7 +20,7 @@
 
 ### 项目概述
 
-Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用业余时间开发中）。机器人采用双处理器架构——**鲁班猫 Zero (RK3566)** 运行 ROS2 Humble，负责高层感知、路径规划与运动控制；**STM32F405RGT6** 运行 FreeRTOS 与 MicroROS，负责实时传感器融合与底层硬件驱动。18个舵机使用的是 UBTECH 的拆机舵机，具体可参考“[某宝白菜价舵机](https://gitee.com/alicedodo/xaobao_cheap_bus_servo_hack_record/)”。
+Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用业余时间开发中）。机器人采用双处理器架构——**鲁班猫 Zero (RK3566)** 运行 ROS2 Humble，负责高层感知、路径规划与运动控制；**STM32F405RGT6** 运行 FreeRTOS 与 MicroROS，负责实时发布 IMU 数据、充电控制、温度监控、发布电池等硬件信息。由鲁班猫直接控制的18个舵机使用的是 UBTECH 的拆机舵机，具体可参考“[某宝白菜价舵机](https://gitee.com/alicedodo/xaobao_cheap_bus_servo_hack_record/)”。
 
 **主要功能包括：**
 
@@ -62,15 +62,12 @@ TODO: 等待全部开发完毕
 
 ### 环境依赖
 
-| 组件                          | 要求                              |
-| ----------------------------- | --------------------------------- |
-| **操作系统（鲁班猫/开发机）** | Ubuntu 22.04 LTS                  |
-| **ROS2**                      | Humble                            |
-| **MicroROS**                  | MicroROS for STM32（Humble 分支） |
-| **Python**                    | ≥ 3.10                            |
-| **IDE**                       | CLion、CMake                      |
-| **仿真环境**                  | Gazebo 11                         |
-| **3D 打印**                   | Bambu Lab A1（已测试），PETG 耗材 |
+| 组件                          | 要求                                                         |
+| ----------------------------- | ------------------------------------------------------------ |
+| **操作系统（鲁班猫/开发机）** | Ubuntu 22.04 LTS                                             |
+| **开发环境**                  | ROS2 Humble、MicroROS for STM32、Python3.10、gcc-13、CLion、STM32CubeMX |
+| **仿真环境**                  | Gazebo 11                                                    |
+| **3D 打印**                   | Bambu Lab A1、PETG 耗材（已测试）                            |
 
 ### 编译项目
 
@@ -79,6 +76,8 @@ TODO: 等待全部开发完毕
 ```bash
 git https://github.com/greenhand520/hexapod_ros.git
 cd hexapod_ros
+git submodule init   
+git submodule update --remote --checkout
 ```
 
 **2. 编译 ROS2 工作空间**
