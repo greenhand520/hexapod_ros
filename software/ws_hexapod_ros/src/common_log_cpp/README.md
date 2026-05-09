@@ -30,7 +30,7 @@ endif ()
 #include "common_log_cpp/log_interface/log_manager.hpp"
 
 const auto node = std::make_shared<rclcpp::Node>("log_test_node");
-// 1、先使用node初始化日志logger，调用这行代码后RCLCPP记录日志的后端才会用这个common_log_cpp来实现，而具体的实现依靠下面的log_interface::LogManager::set(logger_interface);
+// 1、先使用RclcppLogHandler初始化日志logger
 common_log::RclcppLogHandler::init_from_node(node);
 // 2、获取刚才创建的logger实例中得到spdlogger对象
 const auto logger = common_log::Logger::get_instance().get_logger();
@@ -43,17 +43,36 @@ log_interface::LogManager::set(logger_interface);
 方式2：获取不到 node 实例时，可以按照下面顺序初始化日志
 
 ```cpp
+// 还是先使用RclcppLogHandler初始化日志logger
+// 假设params是你存储配置的map,map的key和yaml中定义的一样
+std::unordered_map<std::string, std::string> params;
+common_log::RclcppLogHandler::init_from_map(params);
+// 或者自己实现获取LogConfig
+LogConfig log_config;
+common_log::RclcppLogHandler::init_from_config(log_config);
+// 后续操作和前面一样
+const auto logger = common_log::Logger::get_instance().get_logger();
+const auto logger_interface = common_log::SpdlogLoggerAdapter::create_spdlog_logger(logger);
+log_interface::LogManager::set(logger_interface);
+```
+
+方式3：如果不想代替 RCLCPP 的后端来记录日志，不调用`RclcppLogHandler`的几个`init_from_xxx`函数即可。
+
+```cpp
 // 先创建LogConfig，它的配置内容获取可以自己实现
 common_log::LogConfig log_config;
 // 这里提供了一个默认实现，假设params是你存储配置的map
 std::unordered_map<std::string, std::string> params;
 log_config.init_from_map(params);
+// 初始化日志logger
 common_log::Logger::init_from_config(&log_config);
 // 后续操作和前面一样
 const auto logger = common_log::Logger::get_instance().get_logger();
 const auto logger_interface = common_log::SpdlogLoggerAdapter::create_spdlog_logger(logger);
 log_interface::LogManager::set(logger_interface);
 ```
+
+> 调用`RclcppLogHandler`中的几个`init_from_xxx`后 RCLCPP 记录日志的后端才会用这个 common_log_cpp 来实现，而具体的实现依靠`log_interface::LogManager::set(logger_interface);`
 
 ### 记录日志
 

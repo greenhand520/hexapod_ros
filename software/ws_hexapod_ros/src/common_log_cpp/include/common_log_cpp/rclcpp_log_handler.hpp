@@ -5,9 +5,10 @@
 #pragma once
 
 #include <chrono>
-#include <vector>
+#include <oneapi/tbb/partitioner.h>
 #include <rclcpp/rclcpp.hpp>
 #include <rcutils/logging.h>
+#include <vector>
 
 #include "log.hpp"
 
@@ -15,14 +16,23 @@ namespace common_log {
     class RclcppLogHandler {
 
     public:
-        // 调用这个函数后RCLCPP记录日志的后端才会用这个common_log_cpp来实现，
+        // 调用下面这几个init_from_xxx函数后RCLCPP记录日志的后端才会用这个common_log_cpp来实现，
         // 而具体的实现依靠log_interface::LogManager::set(xxx);
         static void init_from_node(const rclcpp::Node::SharedPtr& node) {
             LogConfig log_config;
             log_config.init_from_node(node);
+            init_from_config(log_config);
+        }
+
+        static void init_from_map(const std::unordered_map<std::string, std::string>& m) {
+            LogConfig log_config;
+            log_config.init_from_map(m);
+            init_from_config(log_config);
+        }
+
+
+        static void init_from_config(const LogConfig& log_config) {
             Logger::init_from_config(&log_config);
-            const rcutils_ret_t set_level_res = spdlog_level_to_rcutils(log_config.log_level);
-            RCLCPP_INFO(node->get_logger(), "Logger %s set level res: %d", node->get_logger().get_name(), set_level_res);
             rcutils_logging_set_output_handler(&RclcppLogHandler::log_output_handler);
         }
 
