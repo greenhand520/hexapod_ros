@@ -20,7 +20,7 @@
 
 ### 项目概述
 
-Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用业余时间开发中）。机器人采用双处理器架构——**鲁班猫 Zero (RK3566)** 运行 ROS2 Humble，负责高层感知、路径规划与运动控制；**STM32F405RGT6** 运行 FreeRTOS 与 MicroROS，负责实时发布 IMU 数据、充电控制、温度监控、发布电池等硬件信息。由鲁班猫直接控制的18个舵机使用的是 UBTECH 的拆机舵机，具体可参考“[某宝白菜价舵机](https://gitee.com/alicedodo/xaobao_cheap_bus_servo_hack_record/)”。
+Hexapod-ROS 是一个开源的六足机器人平台（目前正在利用业余时间开发中）。机器人采用双处理器架构——**鲁班猫 Zero (RK3566)** 运行 ROS2 Humble，负责高层感知、路径规划与运动控制；**STM32F405RGT6** 运行 FreeRTOS 与 MicroROS，负责实时发布 IMU 数据、充电控制、温度监控、发布电池等硬件信息。由鲁班猫直接控制的18个舵机使用的是 UBTECH 的拆机舵机，舵机详情可参考“[某宝白菜价舵机](https://gitee.com/alicedodo/xaobao_cheap_bus_servo_hack_record/)”。
 
 **主要功能包括：**
 
@@ -83,14 +83,25 @@ git submodule update --remote --checkout
 **2. 编译 ROS2 工作空间**
 
 ```bash
-cd software/ws_hexapod_ros/
+cd software/hexapod_ros_ws/
 rosdep install --from-paths src --ignore-src -r -y
 chmod +x ./colcon_build.sh
 ./colcon_build.sh
 source install/setup.bash
+# 启动
+ros2 launch hexapod_bringup start.launch.py
+# 添加自启动服务
+TODO
 ```
 
 **3. 编译并烧录 STM32 固件**
+
+```bash
+cd software/hexapod_ros_ws/
+chmod +x lib_microros_generation.sh
+# 编译 microros 静态库并将相关文件复制到 hexapod_stm32f405 中
+./lib_microros_generation.sh -r
+```
 
 在 Clion 中打开 `software/hexapod_stm32f405/`，编译项目后通过 ST-Link 烧录。
 
@@ -128,7 +139,7 @@ source install/setup.bash
 
 ### PCB 设计
 
-所有PCB（主控板、扩展板、取电板、电池保护版）均使用 **[JLCEDA Pro](https://pro.lceda.cn/editor/)**进行设计，对应工程文件位于 [`hardware`](hardware/) 目录下。
+所有PCB（主控板、扩展板、取电板、电池保护版）均使用 [JLCEDA Pro](https://pro.lceda.cn/editor/) 进行设计，对应工程文件位于 [`hardware`](hardware/) 目录下。
 
 > 最新可以直接在线查看的 PCB 项目文件可以访问 [oshwhub 发布页面](https://oshwhub.com/) （等待所有PCB测试通过）。
 
@@ -162,12 +173,12 @@ STM32 固件基于 FreeRTOS 和 STM32 HAL 库运行，通过 MicroROS 经 UART �
 - 发布 BQ40Z50 的电池状态（`/battery/status` 话题）
 - 通过 ADC 采集并发布板载温度、电压数据和BQ24725 的充电状态（`/sensor/board_state` 话题）
 
-### ROS2 工作空间 (`software/ws_hexapod_ros/`)
+### ROS2 工作空间 (`software/hexapod_ros_ws/`)
 
 ROS2 工作空间包含运行在鲁班猫 Zero（RK3566）上的所有高层功能包，系统为 Ubuntu 22.04 + ROS2 Humble。
 
 ```
-software/ws_hexapod_ros/
+software/hexapod_ros_ws/
 ├── src
 │   ├── hexapod_bringup
 │   ├── hexapod_description
