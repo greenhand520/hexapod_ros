@@ -1,0 +1,5 @@
+# SetAngle.srv
+SetAngle angle
+---
+bool success
+string message

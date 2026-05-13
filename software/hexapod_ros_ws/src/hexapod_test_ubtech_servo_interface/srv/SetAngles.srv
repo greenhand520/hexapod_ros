@@ -1,0 +1,5 @@
+# SetAngles.srv
+SetAngle[] angles
+---
+bool success
+string message
