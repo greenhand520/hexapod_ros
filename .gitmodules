@@ -1,0 +1,3 @@
+[submodule "software/hexapod_ros_ws/src/ydlidar_ros2_driver"]
+	path = software/hexapod_ros_ws/src/ydlidar_ros2_driver
+	url = https://github.com/greenhand520/ydlidar_ros2_driver.git
