@@ -12,7 +12,9 @@ venv/
 .env
 *.bkp
 
+software/hexapod_stm32f405/Middlewares/microros/
+
 micro_ros_stm32cubemx_utils/
-microros_ws/
 
 .clinerules/
+.cache/
