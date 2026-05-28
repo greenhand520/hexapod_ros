@@ -64,6 +64,7 @@ void MX_I2C1_Init(void);
 #define VM_EN_GPIO_Port GPIOC
 #define AC_OK_Pin GPIO_PIN_14
 #define AC_OK_GPIO_Port GPIOC
+#define AC_OK_EXTI_IRQn EXTI15_10_IRQn
 #define MPU_INT_Pin GPIO_PIN_15
 #define MPU_INT_GPIO_Port GPIOC
 #define MPU_INT_EXTI_IRQn EXTI15_10_IRQn
@@ -81,6 +82,8 @@ void MX_I2C1_Init(void);
 #define FAN_EN_GPIO_Port GPIOC
 #define CV_ADC_Pin GPIO_PIN_5
 #define CV_ADC_GPIO_Port GPIOC
+#define HUSB238A_INT_Pin GPIO_PIN_2
+#define HUSB238A_INT_GPIO_Port GPIOB
 #define BUZZ_Pin GPIO_PIN_10
 #define BUZZ_GPIO_Port GPIOA
 #define WS2812_Pin GPIO_PIN_7

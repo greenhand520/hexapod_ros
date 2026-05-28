@@ -96,7 +96,8 @@
 #define configTIMER_TASK_STACK_DEPTH             1280
 
 /* The following flag must be enabled only when using newlib */
-#define configUSE_NEWLIB_REENTRANT          1
+/* picolibc is already thread-safe; set to 0 when not using newlib */
+#define configUSE_NEWLIB_REENTRANT          0
 
 /* CMSIS-RTOS V2 flags */
 #define configUSE_OS2_THREAD_SUSPEND_RESUME  1

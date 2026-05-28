@@ -46,6 +46,7 @@ ADC_HandleTypeDef hadc1;
 DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c2;
 
 SPI_HandleTypeDef hspi1;
 DMA_HandleTypeDef hdma_spi1_rx;
@@ -68,48 +69,6 @@ const osThreadAttr_t DefaultTask_attributes = {
   .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for URosSpinTask */
-osThreadId_t URosSpinTaskHandle;
-const osThreadAttr_t URosSpinTask_attributes = {
-  .name = "URosSpinTask",
-  .stack_size = 4096 * 4,
-  .priority = (osPriority_t) osPriorityAboveNormal,
-};
-/* Definitions for IMUTask */
-osThreadId_t IMUTaskHandle;
-const osThreadAttr_t IMUTask_attributes = {
-  .name = "IMUTask",
-  .stack_size = 640 * 4,
-  .priority = (osPriority_t) osPriorityNormal5,
-};
-/* Definitions for ADCTask */
-osThreadId_t ADCTaskHandle;
-const osThreadAttr_t ADCTask_attributes = {
-  .name = "ADCTask",
-  .stack_size = 640 * 4,
-  .priority = (osPriority_t) osPriorityNormal4,
-};
-/* Definitions for BQ40Z50Task */
-osThreadId_t BQ40Z50TaskHandle;
-const osThreadAttr_t BQ40Z50Task_attributes = {
-  .name = "BQ40Z50Task",
-  .stack_size = 640 * 4,
-  .priority = (osPriority_t) osPriorityNormal4,
-};
-/* Definitions for BQ24735ServiceT */
-osThreadId_t BQ24735ServiceTHandle;
-const osThreadAttr_t BQ24735ServiceT_attributes = {
-  .name = "BQ24735ServiceT",
-  .stack_size = 640 * 4,
-  .priority = (osPriority_t) osPriorityNormal3,
-};
-/* Definitions for WS2812Task */
-osThreadId_t WS2812TaskHandle;
-const osThreadAttr_t WS2812Task_attributes = {
-  .name = "WS2812Task",
-  .stack_size = 640 * 4,
-  .priority = (osPriority_t) osPriorityLow2,
-};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -125,13 +84,8 @@ static void MX_ADC1_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);
+static void MX_I2C2_Init(void);
 void StartDefaultTask(void *argument);
-void StartURosSpinTask(void *argument);
-void StartIMUTask(void *argument);
-void StartADCTask(void *argument);
-void StartBQ40Z50Task(void *argument);
-void StartBQ24735ServiceTask(void *argument);
-void StartWS2812Task(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -179,6 +133,7 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_TIM4_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -205,24 +160,7 @@ int main(void)
   /* Create the thread(s) */
   /* creation of DefaultTask */
   DefaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &DefaultTask_attributes);
-
-  /* creation of URosSpinTask */
-  URosSpinTaskHandle = osThreadNew(StartURosSpinTask, NULL, &URosSpinTask_attributes);
-
-  /* creation of IMUTask */
-  IMUTaskHandle = osThreadNew(StartIMUTask, NULL, &IMUTask_attributes);
-
-  /* creation of ADCTask */
-  ADCTaskHandle = osThreadNew(StartADCTask, NULL, &ADCTask_attributes);
-
-  /* creation of BQ40Z50Task */
-  BQ40Z50TaskHandle = osThreadNew(StartBQ40Z50Task, NULL, &BQ40Z50Task_attributes);
-
-  /* creation of BQ24735ServiceT */
-  BQ24735ServiceTHandle = osThreadNew(StartBQ24735ServiceTask, NULL, &BQ24735ServiceT_attributes);
-
-  /* creation of WS2812Task */
-  WS2812TaskHandle = osThreadNew(StartWS2812Task, NULL, &WS2812Task_attributes);
+  app_start();
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -425,6 +363,40 @@ void MX_I2C1_Init(void)
 }
 
 /**
+  * @brief I2C2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C2_Init(void)
+{
+
+  /* USER CODE BEGIN I2C2_Init 0 */
+
+  /* USER CODE END I2C2_Init 0 */
+
+  /* USER CODE BEGIN I2C2_Init 1 */
+
+  /* USER CODE END I2C2_Init 1 */
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.ClockSpeed = 100000;
+  hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C2_Init 2 */
+
+  /* USER CODE END I2C2_Init 2 */
+
+}
+
+/**
   * @brief SPI1 Initialization Function
   * @param None
   * @retval None
@@ -548,7 +520,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 8399;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 2499;
+  htim2.Init.Period = 1249;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -735,8 +707,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, VM_EN_Pin|FAN_EN_Pin, GPIO_PIN_RESET);
@@ -753,13 +725,13 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : AC_OK_Pin */
   GPIO_InitStruct.Pin = AC_OK_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(AC_OK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : MPU_INT_Pin */
   GPIO_InitStruct.Pin = MPU_INT_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(MPU_INT_GPIO_Port, &GPIO_InitStruct);
 
@@ -769,6 +741,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(CS1_MPU_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : HUSB238A_INT_Pin */
+  GPIO_InitStruct.Pin = HUSB238A_INT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(HUSB238A_INT_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 5, 0);
@@ -795,112 +773,8 @@ void StartDefaultTask(void *argument)
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
+  Task_default(argument);
   /* USER CODE END 5 */
-}
-
-/* USER CODE BEGIN Header_StartURosSpinTask */
-/**
-* @brief Function implementing the URosSpinTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartURosSpinTask */
-void StartURosSpinTask(void *argument)
-{
-  /* USER CODE BEGIN StartURosSpinTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartURosSpinTask */
-}
-
-/* USER CODE BEGIN Header_StartIMUTask */
-/**
-* @brief Function implementing the IMUTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartIMUTask */
-void StartIMUTask(void *argument)
-{
-  /* USER CODE BEGIN StartIMUTask */
-  App_IMUTask(argument);
-  /* USER CODE END StartIMUTask */
-}
-
-/* USER CODE BEGIN Header_StartADCTask */
-/**
-* @brief Function implementing the ADCTask thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartADCTask */
-void StartADCTask(void *argument)
-{
-  /* USER CODE BEGIN StartADCTask */
-  App_ADCTask(argument);
-  /* USER CODE END StartADCTask */
-}
-
-/* USER CODE BEGIN Header_StartBQ40Z50Task */
-/**
-* @brief Function implementing the BQ40Z50Task thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartBQ40Z50Task */
-void StartBQ40Z50Task(void *argument)
-{
-  /* USER CODE BEGIN StartBQ40Z50Task */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartBQ40Z50Task */
-}
-
-/* USER CODE BEGIN Header_StartBQ24735ServiceTask */
-/**
-* @brief Function implementing the BQ24735ServiceT thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartBQ24735ServiceTask */
-void StartBQ24735ServiceTask(void *argument)
-{
-  /* USER CODE BEGIN StartBQ24735ServiceTask */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartBQ24735ServiceTask */
-}
-
-/* USER CODE BEGIN Header_StartWS2812Task */
-/**
-* @brief Function implementing the WS2812Task thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartWS2812Task */
-void StartWS2812Task(void *argument)
-{
-  /* USER CODE BEGIN StartWS2812Task */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartWS2812Task */
 }
 
 /**

@@ -80,7 +80,25 @@ git submodule init
 git submodule update --remote --checkout
 ```
 
-**2. 编译 ROS2 工作空间**
+**2. 安装需要的软件包**
+
+```bash
+# YDLIDAR SDK
+git clone https://github.com/YDLIDAR/YDLidar-SDK.git
+cd YDLidar-SDK
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+
+# microros agent
+cd software/hexapod_ros_ws/
+chmod +x ./install_microros_agent.sh
+./install_microros_agent.sh
+```
+
+**3. 编译 ROS2 工作空间**
 
 ```bash
 cd software/hexapod_ros_ws/
@@ -94,7 +112,7 @@ ros2 launch hexapod_bringup start.launch.py
 TODO
 ```
 
-**3. 编译并烧录 STM32 固件**
+**4. 编译并烧录 STM32 固件**
 
 ```bash
 cd software/hexapod_ros_ws/

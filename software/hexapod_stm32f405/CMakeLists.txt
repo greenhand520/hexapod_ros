@@ -20,6 +20,14 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif ()
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_definitions(LOG_ENABLED=1)
+    message(STATUS ">>> Debug build: LOG enabled")
+else ()
+    add_compile_definitions(LOG_ENABLED=0)
+    message(STATUS ">>> Release build: LOG disabled")
+endif ()
+
 # Set the project name
 set(CMAKE_PROJECT_NAME hexapod_stm32f405)
 
@@ -47,13 +55,22 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         # Add user sources here
-        Core/Src/bq24725.c
-        Core/Src/bq40z50.c
-        Core/Src/mpu6500.c
-        Core/Src/ws2812.c
-        Core/Src/buzz.c
-        Core/Src/adc.c
+        Core/Src/bsp/bq24725.c
+        Core/Src/bsp/bq40z50.c
+        Core/Src/bsp/husb238a.c
+        Core/Src/bsp/mpu6500.c
+        Core/Src/bsp/ws2812.c
+        Core/Src/bsp/buzz.c
+        Core/Src/bsp/adc.c
+        Core/Src/bsp/i2c.c
+        Core/Src/task/task_battery_state.c
+        Core/Src/task/task_board_state.c
+        Core/Src/task/task_default.c
+        Core/Src/task/task_imu.c
+        Core/Src/task/task_led_indication.c
+        Core/Src/task/task_microros.c
         Core/Src/app.c
+        Core/Src/log.c
         Middlewares/microros/src/custom_memory_manager.c
         Middlewares/microros/src/microros_allocators.c
         Middlewares/microros/src/microros_time.c
