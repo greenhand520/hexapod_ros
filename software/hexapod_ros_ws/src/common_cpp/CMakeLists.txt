@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 set(PROJECT_VERSION 1.0.0)
-project(common_log_cpp VERSION ${PROJECT_VERSION})
+project(common_cpp VERSION ${PROJECT_VERSION})
 
 if(DEFINED ENV{CLION_IDE})
     message(STATUS "CLion env detected")
@@ -25,16 +25,29 @@ find_package(rclcpp REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(Threads REQUIRED)
 find_package(fmt REQUIRED)
+#find_package(TBB REQUIRED)
+find_package(PkgConfig)
+if(PkgConfig_FOUND)
+    pkg_check_modules(GPIOD REQUIRED libgpiod)
+else()
+    find_library(GPIOD_LIBRARIES NAMES gpiod)
+    find_path(GPIOD_INCLUDE_DIRS gpiod.h)
+endif()
 
 add_library(${PROJECT_NAME} SHARED
-        include/common_log_cpp/log_interface/log_interface.hpp
-        include/common_log_cpp/log_interface/log_manager.hpp
-        include/common_log_cpp/log_interface/log_macro.hpp
-        include/common_log_cpp/spdlog_adapter.hpp
-        include/common_log_cpp/log.hpp
-        include/common_log_cpp/spdlog_adapter.hpp
-        src/log.cpp
-        src/spdlog_adapter.cpp
+        include/common_cpp/log/log_interface/log_interface.hpp
+        include/common_cpp/log/log_interface/log_manager.hpp
+        include/common_cpp/log/log_interface/log_macro.hpp
+        include/common_cpp/log/spdlog_adapter.hpp
+        include/common_cpp/log/log.hpp
+        include/common_cpp/log/spdlog_adapter.hpp
+        src/log/log.cpp
+        src/log/spdlog_adapter.cpp
+
+        include/common_cpp/lubancat/gpio_pin.hpp
+        include/common_cpp/lubancat/serial_port.hpp
+        src/lubancat/gpio_pin.cpp
+        src/lubancat/serial_port.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -46,6 +59,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
         fmt::fmt
         spdlog::spdlog
         Threads::Threads
+        ${GPIOD_LIBRARIES}
+#        TBB::tbb
 )
 
 ament_target_dependencies(${PROJECT_NAME} PUBLIC

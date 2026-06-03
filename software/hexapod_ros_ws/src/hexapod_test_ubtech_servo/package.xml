@@ -4,7 +4,7 @@
   <name>hexapod_test_ubtech_servo</name>
   <version>1.0.0</version>
   <description>A node to test ubtech servo</description>
-  <maintainer email="mdmbct@outlook.com">zwh</maintainer>
+  <maintainer email="mdmbct@163.com">zwh</maintainer>
   <license>GPL3.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -14,6 +14,7 @@
   <depend>std_srvs</depend>
   <depend>hexapod_test_ubtech_servo_interface</depend>
   <depend>hexapod_ubtech_ros2_control</depend>
+  <depend>common_cpp</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

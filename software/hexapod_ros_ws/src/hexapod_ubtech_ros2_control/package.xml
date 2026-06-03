@@ -4,7 +4,7 @@
   <name>hexapod_ubtech_ros2_control</name>
   <version>1.0.0</version>
   <description>Use the ros2 control to control the ubtech serial servo</description>
-  <maintainer email="mdmbct@outlook.com">greenhand520</maintainer>
+  <maintainer email="mdmbct@163.com">greenhand520</maintainer>
   <license>GPL3.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
@@ -13,9 +13,7 @@
   <depend>rclcpp_lifecycle</depend>
   <depend>pluginlib</depend>
   <depend>hardware_interface</depend>
-  <depend>common_log_cpp</depend>
-
-  <build_depend>libgpiod-dev</build_depend>
+  <depend>common_cpp</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -15,11 +15,11 @@
 
 #include "hexapod_ubtech_ros2_control/servo_system.hpp"
 
-#include "common_log_cpp/log.hpp"
-#include "common_log_cpp/log_interface/log_macro.hpp"
-#include "common_log_cpp/log_interface/log_manager.hpp"
-#include "common_log_cpp/rclcpp_log_handler.hpp"
-#include "common_log_cpp/spdlog_adapter.hpp"
+#include "common_cpp/log/log.hpp"
+#include "common_cpp/log/log_interface/log_macro.hpp"
+#include "common_cpp/log/log_interface/log_manager.hpp"
+#include "common_cpp/log/rclcpp_log_handler.hpp"
+#include "common_cpp/log/spdlog_adapter.hpp"
 #include "hexapod_ubtech_ros2_control/ubtech_servo.hpp"
 
 namespace ubtech_servo_hardware {
@@ -94,14 +94,14 @@ namespace ubtech_servo_hardware {
     hardware_interface::CallbackReturn UbtechServoSystem::on_configure(
         const rclcpp_lifecycle::State& /*prev*/) {
         // Serial
-        serial_ = std::make_unique<SerialPort>();
+        serial_ = std::make_unique<lubancat_hw::SerialPort>();
         if (!serial_->open(serial_device_, baud_rate_)) {
             LOG_ERROR("Cannot open serial port '%s' at %d baud", serial_device_, baud_rate_);
             return hardware_interface::CallbackReturn::ERROR;
         }
 
         // GPIO TX_EN
-        tx_en_ = std::make_unique<GpioPin>();
+        tx_en_ = std::make_unique<lubancat_hw::GpioPin>();
         if (!tx_en_->open(gpio_name_, "ubtech_servo_tx_en")) {
             LOG_ERROR("Cannot open GPIO %s", gpio_name_);
             return hardware_interface::CallbackReturn::ERROR;

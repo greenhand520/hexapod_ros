@@ -5,7 +5,7 @@
     <name>hexapod_bringup</name>
     <version>1.0.0</version>
     <description>Integration launch files and configs for the hexapod</description>
-    <maintainer email="mdmbct@outlook.com">greenhand520</maintainer>
+    <maintainer email="mdmbct@163.com">greenhand520</maintainer>
     <license>GPL3.0</license>
 
     <exec_depend>hexapod_sensor_interface</exec_depend>

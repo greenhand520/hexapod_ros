@@ -4,7 +4,7 @@
     <name>hexapod_interface</name>
     <version>1.0.0</version>
     <description>Files that define the vast majority of hexapod communication between nodes</description>
-    <maintainer email="mdmbct@outlook.com">greenhand520</maintainer>
+    <maintainer email="mdmbct@163.com">greenhand520</maintainer>
     <license>GPL3.0</license>
 
     <buildtool_depend>ament_cmake</buildtool_depend>

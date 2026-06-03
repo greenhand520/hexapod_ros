@@ -1,4 +1,4 @@
-common_log_cpp
+common_cpp
 
 公共的日志记录，使用 spdlog 代替 rclcpp 的后端日志实现，并且支持自定义日志实现
 
@@ -7,15 +7,15 @@ common_log_cpp
 ### CMakeLists配置
 
 ```cmake
-find_package(common_log_cpp REQUIRED)
+find_package(common_cpp REQUIRED)
 
 if (DEFINED ENV{CLION_IDE})
     target_link_libraries(${PROJECT_NAME} PUBLIC
-            common_log_cpp
+            common_cpp
     )
 else ()
     ament_target_dependencies(${PROJECT_NAME} PUBLIC
-            common_log_cpp
+            common_cpp
     )
 endif ()
 ```
@@ -25,9 +25,9 @@ endif ()
 方式1：当模块可以获取到 ros2 节点 node 实例时，可以在在 main 函数中按照下面顺序初始化全局日志
 
 ```cpp
-#include "common_log_cpp/rclcpp_log_handler.hpp"
-#include "common_log_cpp/spdlog_adapter.hpp"
-#include "common_log_cpp/log_interface/log_manager.hpp"
+#include "common_cpp/rclcpp_log_handler.hpp"
+#include "common_cpp/spdlog_adapter.hpp"
+#include "common_cpp/log_interface/log_manager.hpp"
 
 const auto node = std::make_shared<rclcpp::Node>("log_test_node");
 // 1、先使用RclcppLogHandler初始化日志logger
@@ -72,7 +72,7 @@ const auto logger_interface = common_log::SpdlogLoggerAdapter::create_spdlog_log
 log_interface::LogManager::set(logger_interface);
 ```
 
-> 调用`RclcppLogHandler`中的几个`init_from_xxx`后 RCLCPP 记录日志的后端才会用这个 common_log_cpp 来实现，而具体的实现依靠`log_interface::LogManager::set(logger_interface);`
+> 调用`RclcppLogHandler`中的几个`init_from_xxx`后 RCLCPP 记录日志的后端才会用这个 common_cpp 来实现，而具体的实现依靠`log_interface::LogManager::set(logger_interface);`
 
 ### 记录日志
 

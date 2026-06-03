@@ -1,7 +1,7 @@
 //
 // Created by greenhand520 on 2026/5/4.
 //
-#include "hexapod_ubtech_ros2_control/serial_port.hpp"
+#include "common_cpp/lubancat/serial_port.hpp"
 
 #include <fcntl.h>
 #include <format>
@@ -10,7 +10,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-namespace ubtech_servo_hardware {
+namespace lubancat_hw {
 
     SerialPort::SerialPort() : fd_(-1) {
     }

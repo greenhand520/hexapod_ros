@@ -5,9 +5,9 @@
 #include <rclcpp/rclcpp.hpp>
 #include "hexapod_test_ubtech_servo/test_ubtech_servo.hpp"
 
-#include "common_log_cpp/rclcpp_log_handler.hpp"
-#include "common_log_cpp/spdlog_adapter.hpp"
-#include "common_log_cpp/log_interface/log_manager.hpp"
+#include "common_cpp/log/rclcpp_log_handler.hpp"
+#include "common_cpp/log/spdlog_adapter.hpp"
+#include "common_cpp/log/log_interface/log_manager.hpp"
 
 int main(int argc, char* argv[]) {
     rclcpp::init(argc, argv);

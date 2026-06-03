@@ -16,8 +16,8 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 
-#include "gpio_pin.hpp"
-#include "serial_port.hpp"
+#include "common_cpp/lubancat/gpio_pin.hpp"
+#include "common_cpp/lubancat/serial_port.hpp"
 
 namespace ubtech_servo_hardware {
 
@@ -52,7 +52,7 @@ namespace ubtech_servo_hardware {
     public:
         /// @param serial  Pointer to an opened SerialPort (caller retains ownership)
         /// @param tx_en   Pointer to a configured GpioPin for TX_EN (caller retains ownership)
-        UbtechServo(SerialPort* serial, GpioPin* tx_en);
+        UbtechServo(lubancat_hw::SerialPort* serial, lubancat_hw::GpioPin* tx_en);
         ~UbtechServo() = default;
 
         UbtechServo(const UbtechServo&) = delete;
@@ -107,8 +107,8 @@ namespace ubtech_servo_hardware {
 
 
     private:
-        SerialPort* serial_;
-        GpioPin* tx_en_;
+        lubancat_hw::SerialPort* serial_;
+        lubancat_hw::GpioPin* tx_en_;
         std::mutex bus_mutex_; // 保护总线访问
 
         // TX_EN 控制

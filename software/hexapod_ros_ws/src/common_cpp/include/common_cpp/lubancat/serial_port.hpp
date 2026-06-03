@@ -9,7 +9,7 @@
 #include <string>
 #include <termios.h>
 
-namespace ubtech_servo_hardware {
+namespace lubancat_hw {
 
     /// @brief POSIX serial port wrapper with configurable baud rate and framing.
     class SerialPort {

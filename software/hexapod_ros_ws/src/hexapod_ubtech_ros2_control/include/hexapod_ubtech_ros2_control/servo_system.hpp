@@ -14,8 +14,8 @@
 #include <string>
 #include <vector>
 
-#include "gpio_pin.hpp"
-#include "serial_port.hpp"
+#include "common_cpp/lubancat/gpio_pin.hpp"
+#include "common_cpp/lubancat/serial_port.hpp"
 #include "ubtech_servo.hpp"
 
 namespace ubtech_servo_hardware {
@@ -54,8 +54,8 @@ namespace ubtech_servo_hardware {
 
     private:
         // Hardware resources
-        std::unique_ptr<SerialPort> serial_;
-        std::unique_ptr<GpioPin> tx_en_;
+        std::unique_ptr<lubancat_hw::SerialPort> serial_;
+        std::unique_ptr<lubancat_hw::GpioPin> tx_en_;
         std::unique_ptr<UbtechServo> servo_;
 
         // Configuration

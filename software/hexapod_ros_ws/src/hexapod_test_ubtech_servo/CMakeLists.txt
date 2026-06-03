@@ -29,15 +29,15 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
-
+find_package(TBB REQUIRED)
 if (DEFINED ENV{CLION_IDE})
     set(hexapod_test_ubtech_servo_interface_DIR "${CMAKE_SOURCE_DIR}/install/hexapod_test_ubtech_servo_interface/share/hexapod_test_ubtech_servo_interface/cmake")
     set(hexapod_ubtech_ros2_control_DIR "${CMAKE_SOURCE_DIR}/install/hexapod_ubtech_ros2_control/share/hexapod_ubtech_ros2_control/cmake")
-    set(common_log_cpp_DIR "${CMAKE_SOURCE_DIR}/install/common_log_cpp/share/common_log_cpp/cmake")
+    set(common_cpp_DIR "${CMAKE_SOURCE_DIR}/install/common_cpp/share/common_cpp/cmake")
 endif ()
 find_package(hexapod_ubtech_ros2_control REQUIRED)
 find_package(hexapod_test_ubtech_servo_interface REQUIRED)
-find_package(common_log_cpp REQUIRED)
+find_package(common_cpp REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
         include/hexapod_test_ubtech_servo/ros2_msg.hpp
@@ -49,6 +49,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
         src
+)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
+        TBB::tbb
 )
 
 ament_target_dependencies(${PROJECT_NAME} PUBLIC
@@ -63,13 +67,13 @@ if (DEFINED ENV{CLION_IDE})
     target_link_libraries(${PROJECT_NAME} PUBLIC
             ${hexapod_test_ubtech_servo_interface_TARGET}
             hexapod_ubtech_ros2_control
-            common_log_cpp
+            common_cpp
     )
 else ()
     ament_target_dependencies(${PROJECT_NAME} PUBLIC
             hexapod_test_ubtech_servo_interface
             hexapod_ubtech_ros2_control
-            common_log_cpp
+            common_cpp
     )
 endif ()
 
@@ -189,5 +193,7 @@ ament_export_dependencies(
         std_srvs
         hexapod_test_ubtech_servo_interface
         hexapod_ubtech_ros2_control
-        common_log_cpp
+        common_cpp
 )
+
+ament_package()

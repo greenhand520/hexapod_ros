@@ -3,14 +3,14 @@
 //
 
 
-#include "hexapod_ubtech_ros2_control/gpio_pin.hpp"
+#include "common_cpp/lubancat/gpio_pin.hpp"
 
 #include <expected>
 #include <format>
 #include <gpiod.h>
 #include <stdexcept>
 
-namespace ubtech_servo_hardware {
+namespace lubancat_hw {
 
     GpioPin::GpioPin() : chip_(nullptr), line_(nullptr), line_num_(0) {
     }

@@ -28,28 +28,17 @@ find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(TBB REQUIRED)
+#find_package(TBB REQUIRED)
 
 if (DEFINED ENV{CLION_IDE})
-  set(common_log_cpp_DIR "${CMAKE_SOURCE_DIR}/install/common_log_cpp/share/common_log_cpp/cmake")
-  message(${common_log_cpp_DIR})
+  set(common_cpp_DIR "${CMAKE_SOURCE_DIR}/install/common_cpp/share/common_cpp/cmake")
+  message(${common_cpp_DIR})
 endif ()
-find_package(common_log_cpp REQUIRED)
-
-find_package(PkgConfig)
-if(PkgConfig_FOUND)
-  pkg_check_modules(GPIOD REQUIRED libgpiod)
-else()
-  find_library(GPIOD_LIBRARIES NAMES gpiod)
-  find_path(GPIOD_INCLUDE_DIRS gpiod.h)
-endif()
+find_package(common_cpp REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
-        include/hexapod_ubtech_ros2_control/gpio_pin.hpp
         include/hexapod_ubtech_ros2_control/ubtech_servo.hpp
         include/hexapod_ubtech_ros2_control/servo_system.hpp
-        src/gpio_pin.cpp
-        src/serial_port.cpp
         src/ubtech_servo.cpp
         src/servo_system.cpp
 
@@ -68,18 +57,17 @@ ament_target_dependencies(${PROJECT_NAME} PUBLIC
         rclcpp_lifecycle
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-        ${GPIOD_LIBRARIES}
-        TBB::tbb
-)
+#target_link_libraries(${PROJECT_NAME} PUBLIC
+#        TBB::tbb
+#)
 
 if (DEFINED ENV{CLION_IDE})
   target_link_libraries(${PROJECT_NAME} PUBLIC
-          common_log_cpp
+          common_cpp
   )
 else ()
   ament_target_dependencies(${PROJECT_NAME} PUBLIC
-          common_log_cpp
+          common_cpp
   )
 endif ()
 

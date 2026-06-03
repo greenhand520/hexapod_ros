@@ -11,7 +11,7 @@
 struct gpiod_chip;
 struct gpiod_line;
 
-namespace ubtech_servo_hardware {
+namespace lubancat_hw {
 
     enum GPIOValue : int {
         LOW,

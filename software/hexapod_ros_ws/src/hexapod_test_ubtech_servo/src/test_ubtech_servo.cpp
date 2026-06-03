@@ -8,7 +8,7 @@
 #include <string>
 #include <ranges>
 
-#include <common_log_cpp/log_interface/log_macro.hpp>
+#include <common_cpp/log/log_interface/log_macro.hpp>
 #include "hexapod_test_ubtech_servo/test_ubtech_servo.hpp"
 
 
@@ -97,14 +97,14 @@ namespace ubtech_servo_hardware {
         RCLCPP_INFO(logger_, "init_hardware: serial=%s @ %d baud, gpio_name=%s",
                     serial_device.c_str(), baud_rate, gpio_name.c_str());
 
-        serial_ = std::make_unique<SerialPort>();
+        serial_ = std::make_unique<lubancat_hw::SerialPort>();
         if (!serial_->open(serial_device, baud_rate)) {
             RCLCPP_ERROR(logger_, "Cannot open serial port '%s' at %d baud",
                          serial_device.c_str(), baud_rate);
             return false;
         }
 
-        tx_en_ = std::make_unique<GpioPin>();
+        tx_en_ = std::make_unique<lubancat_hw::GpioPin>();
         if (!tx_en_->open(gpio_name, "test_ubtech_servo_tx_en")) {
             RCLCPP_ERROR(logger_, "Cannot open GPIO %s", gpio_name.c_str());
             return false;

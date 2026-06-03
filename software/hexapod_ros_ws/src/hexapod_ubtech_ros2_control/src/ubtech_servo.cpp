@@ -7,23 +7,23 @@
 #include <chrono>
 #include <thread>
 
-#include "common_log_cpp/log_interface/log_macro.hpp"
+#include "common_cpp/log/log_interface/log_macro.hpp"
 
 namespace ubtech_servo_hardware {
 
-    UbtechServo::UbtechServo(SerialPort* serial, GpioPin* tx_en) : serial_(serial), tx_en_(tx_en) {
+    UbtechServo::UbtechServo(lubancat_hw::SerialPort* serial, lubancat_hw::GpioPin* tx_en) : serial_(serial), tx_en_(tx_en) {
     }
 
     bool UbtechServo::enable_tx() const {
         if (tx_en_ && tx_en_->is_open()) {
-            return tx_en_->set_value(GPIOValue::HIGH) == 0;
+            return tx_en_->set_value(lubancat_hw::GPIOValue::HIGH) == 0;
         }
         return false;
     }
 
     bool UbtechServo::disable_tx() const {
         if (tx_en_ && tx_en_->is_open()) {
-            return tx_en_->set_value(GPIOValue::LOW) == 0;
+            return tx_en_->set_value(lubancat_hw::GPIOValue::LOW) == 0;
         }
         return false;
     }
