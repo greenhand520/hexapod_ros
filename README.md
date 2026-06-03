@@ -216,7 +216,7 @@ software/hexapod_ros_ws/
 
 | 功能包                              | 描述                                                         |
 | ----------------------------------- | ------------------------------------------------------------ |
-| hexapod_bringup                     | 系统启动的 Launch 文件和配置。按正确顺序启动所有硬件驱动、`ros2_control` 控制器、传感器节点和 MicroROS Agent。 |
+| hexapod_bringup                     | 系统启动的 Launch 文件和配置。按正确顺序启动所有硬件驱动、`ros2_control` 控制器、传感器节点和 MicroROS Agent。另外包含见图、当航、IMU融合的配置和启动文件 |
 | hexapod_description                 | RDF/Xacro 机器人模型、网格文件、TF 坐标系与 RViz 可视化配置。定义了 18 自由度运动学结构 |
 | hexapod_interface                   | 定义了hexapod 各节点通信的 msg/service/action 文件           |
 | hexapod_sensor_interface            | 定义了与 stm32 通信的 msg 文件                               |
@@ -224,10 +224,7 @@ software/hexapod_ros_ws/
 | hexapod_test_ubtech_servo_interface | 定义测试 ubtech 舵机服务使用的 service 文件                  |
 | hexapod_ubtech_ros2_control         | 使用 ros2_control 控制 ubtech 舵机，后续可更换成其他舵机，只要实现对应舵机的 ros2_control功能包即可 |
 | ydlidar_ros2_driver                 | YDLIDAR X2 激光雷达 ROS2 驱动                                |
-| hexapod_ik_solver                   | 将足端轨迹 (x,y,z) 转成18个关节的舵机转动角度（TODO）        |
-| hexapod_gait_planner                | 将速度/朝向指令转成足端轨迹/每条腿的foot trajectory（TODO）  |
-| hexapod_slam                        | 基于 SLAM Toolbox 的即时定位与建图，使用 YDLIDAR X2 点云数据。生成 2D 占据栅格地图供导航使用（TODO） |
-| hexapod_navigation                  | Navigation2 导航栈配置（TODO）                               |
+| hexapod_controller                  | 将速度/朝向指令转成足端轨迹/每条腿的foot trajectory，将足端轨迹 (x,y,z) 转成18个关节的舵机转动角度 |
 
 ---
 
@@ -236,10 +233,10 @@ software/hexapod_ros_ws/
 - [x] 硬件设计（PCB、原理图）
 - [x] 3D 打印机身设计（PETG、Bambu Lab A1）
 - [x] 基础 ROS2 bringup 与 ros2_control
-- [ ] STM32 固件与 MicroROS 集成
-- [ ] 逆运动学解算与三角步态
-- [ ] YDLIDAR X2 驱动与 SLAM 集成
-- [ ] Navigation2 路径规划
+- [x] STM32 固件与 MicroROS 集成
+- [x] 逆运动学解算与三角步态
+- [x] YDLIDAR X2 驱动与 SLAM 集成
+- [x] Navigation2 路径规划
 - [ ] RL 训练环境（Gazebo + PyBullet）
 - [ ] RL 运动策略训练（PPO / SAC）
 - [ ] 仿真到实物策略部署
