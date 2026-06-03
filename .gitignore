@@ -5,7 +5,7 @@ build_**
 latest
 latest_build
 install/
-log/
+software/hexapod_ros_ws/log
 logs/
 .venv/
 venv/
@@ -14,7 +14,7 @@ venv/
 
 software/hexapod_stm32f405/Middlewares/microros/
 
-micro_ros_stm32cubemx_utils/
+software/micro_ros_stm32cubemx_utils/
 
 .clinerules/
 .cache/
