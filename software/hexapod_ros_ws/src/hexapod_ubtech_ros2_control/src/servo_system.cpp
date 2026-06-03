@@ -6,7 +6,6 @@
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 #include <pluginlib/class_list_macros.hpp>
 
-#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <fcntl.h>
@@ -30,7 +29,7 @@ namespace ubtech_servo_hardware {
             return hardware_interface::CallbackReturn::ERROR;
         }
 
-        // ── Hardware-level parameters ──
+        // Hardware-level parameters
         const auto& params = info_.hardware_parameters;
 
         common_log::RclcppLogHandler::init_from_map(params);
@@ -41,7 +40,6 @@ namespace ubtech_servo_hardware {
         serial_device_ = params.contains("serial_device") ? params.at("serial_device") : "/dev/ttyS4";
         baud_rate_ = params.contains("baud_rate") ? std::stoi(params.at("baud_rate")) : 115200;
         gpio_name_ = params.contains("gpio_name") ? params.at("gpio_name") : "GPIO1_B1";
-        angle_min_deg_ = params.contains("angle_min_deg") ? std::stod(params.at("angle_min_deg")) : 0.0;
 
         // ── Per-joint parameters ──
         joints_.resize(info_.joints.size());
@@ -58,11 +56,6 @@ namespace ubtech_servo_hardware {
                 return hardware_interface::CallbackReturn::ERROR;
             }
             servo_id = static_cast<uint8_t>(std::stoi(joint_info.parameters.at("servo_id")));
-
-            // angle_offset_deg is optional
-            angle_offset_deg = joint_info.parameters.contains("angle_offset_deg")
-                ? std::stod(joint_info.parameters.at("angle_offset_deg"))
-                : 0.0;
 
             pos_state = 0.0;
             vel_state = 0.0;
@@ -87,10 +80,7 @@ namespace ubtech_servo_hardware {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  on_configure — open serial port, configure GPIO
-    // ═══════════════════════════════════════════════════════════════════════
-
+    /// @brief on_configure — open serial port, configure GPIO
     hardware_interface::CallbackReturn UbtechServoSystem::on_configure(
         const rclcpp_lifecycle::State& /*prev*/) {
         // Serial
@@ -114,24 +104,21 @@ namespace ubtech_servo_hardware {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  on_activate — read initial positions
-    // ═══════════════════════════════════════════════════════════════════════
 
+    /// @brief on_activate — read initial positions
     hardware_interface::CallbackReturn UbtechServoSystem::on_activate(
         const rclcpp_lifecycle::State& /*prev*/) {
         for (auto& jd : joints_) {
             ServoAngle angle{};
-            auto result = servo_->read_angle(jd.servo_id, angle);
-            if (result.has_value() && result.value()) {
-                const double actual_deg = angle.actual_deg;
-                const double pos = (actual_deg - angle_min_deg_ + jd.angle_offset_deg) * DEG2RAD;
+            if (auto result = servo_->read_angle(jd.servo_id, angle); result.has_value() && result.value()) {
+                // actual_rad already accounts for the 120° servo center offset
+                const double pos = angle.actual_rad + jd.angle_offset_deg * DEG2RAD;
                 jd.pos_state = pos;
                 jd.prev_pos_state = pos;
                 jd.pos_cmd = pos;
 
-                LOG_INFO("Joint '{}' (ID {}): initial {:.1f}° → {:.4f} rad",
-                            jd.name, jd.servo_id, actual_deg, pos);
+                LOG_INFO("Joint '{}' (ID {}): initial {:.4f} rad",
+                            jd.name, jd.servo_id, pos);
             }
             else {
                 const std::string err = result.has_value() ? "unknown error" : result.error();
@@ -143,15 +130,11 @@ namespace ubtech_servo_hardware {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  on_deactivate — stop all servos
-    // ═══════════════════════════════════════════════════════════════════════
-
+    ///@brief on_deactivate — stop all servos
     hardware_interface::CallbackReturn UbtechServoSystem::on_deactivate(
         const rclcpp_lifecycle::State& /*prev*/) {
         for (const auto& jd : joints_) {
-            auto result = servo_->stop(jd.servo_id);
-            if (!result.has_value()) {
+            if (auto result = servo_->stop(jd.servo_id); !result.has_value()) {
                 LOG_WARN("Joint '{}' (ID {}): stop failed: {}",
                             jd.name, jd.servo_id, result.error());
             }
@@ -164,10 +147,7 @@ namespace ubtech_servo_hardware {
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  on_cleanup — release resources
-    // ═══════════════════════════════════════════════════════════════════════
-
+    /// @brief on_cleanup — release resources
     hardware_interface::CallbackReturn UbtechServoSystem::on_cleanup(
         const rclcpp_lifecycle::State& /*prev*/) {
         servo_.reset();
@@ -176,10 +156,6 @@ namespace ubtech_servo_hardware {
         LOG_INFO("on_cleanup: done");
         return hardware_interface::CallbackReturn::SUCCESS;
     }
-
-    // ═══════════════════════════════════════════════════════════════════════
-    //  export interfaces
-    // ═══════════════════════════════════════════════════════════════════════
 
     std::vector<hardware_interface::StateInterface> UbtechServoSystem::export_state_interfaces() {
         std::vector<hardware_interface::StateInterface> si;
@@ -209,15 +185,16 @@ namespace ubtech_servo_hardware {
                                                             const rclcpp::Duration& period) {
         for (auto& jd : joints_) {
             ServoAngle angle{};
-            auto result = servo_->read_angle(jd.servo_id, angle);
-            if (result.has_value() && result.value()) {
-                const double actual_deg = angle.actual_deg;
+            if (auto result = servo_->read_angle(jd.servo_id, angle)) {
                 jd.prev_pos_state = jd.pos_state;
-                jd.pos_state = (actual_deg - angle_min_deg_ + jd.angle_offset_deg) * DEG2RAD;
+                // actual_rad already accounts for the 120° servo center offset
+                jd.pos_state = angle.actual_rad + jd.angle_offset_deg * DEG2RAD;
 
                 if (const double dt = period.seconds(); dt > 0.0) {
                     jd.vel_state = (jd.pos_state - jd.prev_pos_state) / dt;
                 }
+            } else {
+                LOG_ERROR("{}", result.error());
             }
             // If read fails, keep last known state
         }
@@ -225,30 +202,26 @@ namespace ubtech_servo_hardware {
         return hardware_interface::return_type::OK;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════
-    //  write — send target angles to all servos
-    // ═══════════════════════════════════════════════════════════════════════
-
     hardware_interface::return_type UbtechServoSystem::write(const rclcpp::Time& /*time*/,
                                                              const rclcpp::Duration& /*period*/) {
         std::vector<AngleCommand> commands;
         commands.reserve(joints_.size());
 
         for (const auto& jd : joints_) {
-            // rad → deg, apply calibration
-            double deg = jd.pos_cmd / DEG2RAD + angle_min_deg_ - jd.angle_offset_deg;
-
-            // Clamp to [0, MAX_SERVO_ANGLE]
-            deg = std::clamp(deg, 0.0, static_cast<double>(MAX_SERVO_ANGLE));
+            // pos_cmd is in radians; subtract per-joint calibration offset
+            // UbtechServo::set_angles handles the 120° center offset internally
+            const double cmd_rad = jd.pos_cmd - jd.angle_offset_deg * DEG2RAD;
 
             AngleCommand cmd;
             cmd.id = jd.servo_id;
-            cmd.angle_deg = static_cast<uint8_t>(std::round(deg));
+            cmd.angle_rad = cmd_rad;
             commands.push_back(cmd);
         }
 
         if (!commands.empty()) {
-            servo_->set_angles(commands);
+            if (auto result = servo_->set_angles(commands); !result) {
+                LOG_ERROR("{}", result.error());
+            }
         }
 
         return hardware_interface::return_type::OK;

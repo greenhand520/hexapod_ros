@@ -140,8 +140,8 @@ namespace ubtech_servo_hardware {
         auto result = servo_->read_angle(req->servo_id, angle);
         res->success = result.has_value() && result.value();
         if (res->success) {
-            res->target_deg = angle.target_deg;
-            res->actual_deg = angle.actual_deg;
+            res->target_deg = angle.target_rad * RAD_TO_DEG;
+            res->actual_deg = angle.actual_rad * RAD_TO_DEG;
             res->message = "OK";
         }
         else {
@@ -177,10 +177,10 @@ namespace ubtech_servo_hardware {
             res->message = "Hardware not initialized";
             return;
         }
-        double offset_deg = 0.0;
-        auto result = servo_->read_offset(req->servo_id, offset_deg);
+        double offset_rad = 0.0;
+        auto result = servo_->read_offset(req->servo_id, offset_rad);
         res->success = result.has_value() && result.value();
-        res->offset_deg = res->success ? offset_deg : 0.0;
+        res->offset_deg = res->success ? offset_rad * RAD_TO_DEG : 0.0;
         res->message = res->success ? "OK" : result.error();
         RCLCPP_INFO(logger_, "read_offset(ID %u): %.2f° %s",
                     req->servo_id, res->offset_deg, res->message.c_str());
@@ -193,7 +193,8 @@ namespace ubtech_servo_hardware {
             return;
         }
         const auto& angle = req->angle;
-        auto result = servo_->set_angle(angle.servo_id, angle.angle_deg,
+        const double angle_rad = static_cast<double>(angle.angle_deg) * DEG_TO_RAD;
+        auto result = servo_->set_angle(angle.servo_id, angle_rad,
                                         angle.motion_time, angle.lock_time_ms);
         res->success = result.has_value() && result.value();
         res->message = res->success ? "OK" : result.error();
@@ -209,7 +210,8 @@ namespace ubtech_servo_hardware {
             res->message = "Hardware not initialized";
             return;
         }
-        auto result = servo_->set_offset(req->servo_id, req->offset_deg);
+        const double offset_rad = req->offset_deg * DEG_TO_RAD;
+        auto result = servo_->set_offset(req->servo_id, offset_rad);
         res->success = result.has_value() && result.value();
         res->message = res->success ? "OK" : result.error();
         RCLCPP_INFO(logger_, "set_offset(ID %u, %.2f°): %s",
@@ -235,7 +237,7 @@ namespace ubtech_servo_hardware {
         auto set_angle_to_angle_command = [&](const SetAngle& angle) -> AngleCommand {
             AngleCommand command;
             command.id = angle.servo_id;
-            command.angle_deg = angle.angle_deg;
+            command.angle_rad = static_cast<double>(angle.angle_deg) * DEG_TO_RAD;
             command.motion_time = angle.motion_time;
             command.lock_time_ms = angle.lock_time_ms;
             return command;

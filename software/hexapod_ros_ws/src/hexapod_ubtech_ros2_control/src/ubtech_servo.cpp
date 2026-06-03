@@ -114,20 +114,22 @@ namespace ubtech_servo_hardware {
     }
 
     // ── Public API ──
-    std::expected<bool, std::string> UbtechServo::set_angle(const uint8_t id, uint8_t angle_deg,
+    std::expected<bool, std::string> UbtechServo::set_angle(const uint8_t id, const double angle_rad,
                                 const uint8_t motion_time, const uint16_t lock_time_ms) {
         if (id == 0 || id > 240)
             return std::unexpected("Invalid servo ID: " + std::to_string(id) + " (must be 1-240)");
-        if (angle_deg > MAX_SERVO_ANGLE)
-            angle_deg = MAX_SERVO_ANGLE;
 
-        // Build frame: FA AF [ID] [01] [angle] [time] [lock_hi] [lock_lo] [chk] [ED]
+        const uint16_t angle_deg = rad_to_servo_deg(angle_rad);
+
+        // Build frame: FA AF [ID] [angle_hi] [angle_lo] [time] [lock_hi] [lock_lo] [chk] [ED]
         uint8_t frame[FRAME_LEN];
         frame[0] = FRAME_HEADER_0;
         frame[1] = FRAME_HEADER_1;
         frame[2] = id;
-        frame[3] = CMD_ROTATE;
-        frame[4] = angle_deg;
+        // 角度高字节
+        frame[3] = static_cast<uint8_t>((angle_deg >> 8) & 0xFF);
+        // 角度低字节
+        frame[4] = static_cast<uint8_t>(angle_deg & 0xFF);
         frame[5] = motion_time;
         frame[6] = static_cast<uint8_t>((lock_time_ms >> 8) & 0xFF);
         frame[7] = static_cast<uint8_t>(lock_time_ms & 0xFF);
@@ -159,20 +161,18 @@ namespace ubtech_servo_hardware {
         std::vector<uint8_t> buf;
         buf.reserve(commands.size() * FRAME_LEN);
 
-        for (const auto& [id, angle_deg, motion_time, lock_time_ms] : commands) {
+        for (const auto& [id, angle_rad, motion_time, lock_time_ms] : commands) {
             if (id == 0 || id > 240)
                 return std::unexpected("Invalid servo ID: " + std::to_string(id) + " (must be 1-240)");
 
-            uint8_t angle_deg_ = angle_deg;
-            if (angle_deg_ > MAX_SERVO_ANGLE)
-                angle_deg_ = MAX_SERVO_ANGLE;
+            const uint16_t angle_deg = rad_to_servo_deg(angle_rad);
 
             uint8_t frame[FRAME_LEN];
             frame[0] = FRAME_HEADER_0;
             frame[1] = FRAME_HEADER_1;
             frame[2] = id;
-            frame[3] = CMD_ROTATE;
-            frame[4] = angle_deg_;
+            frame[3] = static_cast<uint8_t>((angle_deg >> 8) & 0xFF); // 角度高字节
+            frame[4] = static_cast<uint8_t>(angle_deg & 0xFF);        // 角度低字节
             frame[5] = motion_time;
             frame[6] = static_cast<uint8_t>((lock_time_ms >> 8) & 0xFF);
             frame[7] = static_cast<uint8_t>(lock_time_ms & 0xFF);
@@ -246,8 +246,8 @@ namespace ubtech_servo_hardware {
         const uint16_t target_raw = (static_cast<uint16_t>(resp[4]) << 8) | resp[5];
         const uint16_t actual_raw = (static_cast<uint16_t>(resp[6]) << 8) | resp[7];
 
-        angle.target_deg = static_cast<double>(target_raw);
-        angle.actual_deg = static_cast<double>(actual_raw);
+        angle.target_rad = servo_deg_to_rad(target_raw);
+        angle.actual_rad = servo_deg_to_rad(actual_raw);
 
         return true;
     }
@@ -258,7 +258,7 @@ namespace ubtech_servo_hardware {
         frame[0] = FRAME_HEADER_0;
         frame[1] = FRAME_HEADER_1;
         frame[2] = id;
-        frame[3] = CMD_ROTATE;
+        frame[3] = CMD_STOP;
         frame[4] = CMD_STOP_MARKER;
         frame[5] = 0x00;
         frame[6] = 0x00;
@@ -309,10 +309,10 @@ namespace ubtech_servo_hardware {
         return true;
     }
 
-    std::expected<bool, std::string> UbtechServo::set_offset(const uint8_t id, const double offset_deg) {
-        // 偏移量折算: 角度 → 整数编码, 范围 -30 ~ +30
-        // 具体编码方式参考协议文档, 这里假设直接对应
-        const auto raw = static_cast<int16_t>(offset_deg);
+    std::expected<bool, std::string> UbtechServo::set_offset(const uint8_t id, const double offset_rad) {
+        // 偏移量折算: 弧度 → 度数 → 整数编码, 范围 -30 ~ +30
+        const auto offset_deg = static_cast<int16_t>(offset_rad * RAD_TO_DEG);
+        const auto raw = offset_deg;
 
         // FA AF [id] [D2] [00] [00] [offset_hi] [offset_lo] [chk] [ED]
         uint8_t frame[FRAME_LEN] = {};
@@ -345,7 +345,7 @@ namespace ubtech_servo_hardware {
         return true;
     }
 
-    std::expected<bool, std::string> UbtechServo::read_offset(const uint8_t id, double& offset_deg) {
+    std::expected<bool, std::string> UbtechServo::read_offset(const uint8_t id, double& offset_rad) {
         // FA AF [id] [D4] [00] [00] [00] [00] [chk] [ED]
         uint8_t frame[FRAME_LEN] = {};
         frame[0] = FRAME_HEADER_0;
@@ -371,7 +371,7 @@ namespace ubtech_servo_hardware {
         }
 
         const auto raw = static_cast<int16_t>((resp[6] << 8) | resp[7]);
-        offset_deg = static_cast<double>(raw);
+        offset_rad = static_cast<double>(raw) * DEG_TO_RAD;
         return true;
     }
 
