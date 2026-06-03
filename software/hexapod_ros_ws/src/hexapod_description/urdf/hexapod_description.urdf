@@ -45,7 +45,7 @@
     </collision>
   </link>
   <link
-    name="lidar_link">
+    name="laser_frame">
     <inertial>
       <origin
         xyz="0.0127016129333694 -1.24853520894596E-05 -0.0157088713483309"
@@ -66,7 +66,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://hexapod_description/meshes/lidar_link.STL" />
+          filename="package://hexapod_description/meshes/laser_frame.STL" />
       </geometry>
       <material
         name="">
@@ -80,7 +80,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://hexapod_description/meshes/lidar_link.STL" />
+          filename="package://hexapod_description/meshes/laser_frame.STL" />
       </geometry>
     </collision>
   </link>
@@ -93,7 +93,7 @@
     <parent
       link="base_link" />
     <child
-      link="lidar_link" />
+      link="laser_frame" />
     <axis
       xyz="0 0 0" />
   </joint>
@@ -319,8 +319,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.7854"
-      upper="2.09"
+      lower="-2.09"
+      upper="1.06"
       effort="0"
       velocity="0" />
   </joint>
@@ -493,8 +493,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.7854"
-      upper="2.09"
+      lower="-2.09"
+      upper="1.06"
       effort="0"
       velocity="0" />
   </joint>
@@ -667,8 +667,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.7854"
-      upper="2.09"
+      lower="-2.09"
+      upper="1.06"
       effort="0"
       velocity="0" />
   </joint>
@@ -841,8 +841,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.7854"
-      upper="2.09"
+      lower="-2.09"
+      upper="1.06"
       effort="0"
       velocity="0" />
   </joint>
@@ -1015,8 +1015,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.7854"
-      upper="2.09"
+      lower="-2.09"
+      upper="1.06"
       effort="0"
       velocity="0" />
   </joint>
@@ -1189,8 +1189,8 @@
     <axis
       xyz="0 0 -1" />
     <limit
-      lower="-0.7854"
-      upper="2.09"
+      lower="-2.09"
+      upper="1.06"
       effort="0"
       velocity="0" />
   </joint>
