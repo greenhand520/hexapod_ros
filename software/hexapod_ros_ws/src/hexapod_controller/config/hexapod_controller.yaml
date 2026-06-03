@@ -1,0 +1,6 @@
+hexapod_test_ubtech_servo_node:
+  ros__parameters:
+    log:
+      log_level: debug
+      log_path: ./log
+      async: false
